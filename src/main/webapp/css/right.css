@@ -1,0 +1,300 @@
+ /*Source: css/right.css*/
+
+#right-menu { 
+	position: fixed;
+	right: 0px;
+	top: 51px;
+	height: 100%; 
+}
+
+/*导航栏的基本状态*/
+.right-menu {     
+    background: #2c2c2c;
+
+}
+
+/*展开状态*/
+
+.right-menu .right-big {   
+    width: 244px;
+    height: calc(11*32px + 20px); 
+    color: #c6c6c6;   
+}
+
+.right-menu .rightnav-toselect-effectlist,
+.right-menu .rightnav-selected-effectlist { 
+    padding-top: 20px;
+    padding-bottom: 0px;
+    color:#c6c6c6;
+    height: 100%;
+    display: block;
+  
+}
+
+.right-menu .rightnav-toselect-effectlist .effect-tit,
+.right-menu .rightnav-selected-effectlist .effect-tit {
+    width:206px;
+    margin: 0 auto;
+    height:32px;
+    border-bottom:1px solid #2c2c2c;
+}
+
+.right-menu .rightnav-toselect-effectlist .effect-tit .effect-tit-ul .effect-tit-li,
+.right-menu .rightnav-selected-effectlist .effect-tit .effect-tit-ul .effect-tit-li {
+    float:left;
+    width:100%;
+    height:32px;
+    line-height:32px;
+    font-size:15px;
+    cursor:default;
+}
+
+.right-menu .rightnav-toselect-effectlist .effect-tit .effect-tit-ul .effect-tit-li .icon,
+.right-menu .rightnav-selected-effectlist .effect-tit .effect-tit-ul .effect-tit-li .icon{
+    display: inline-block;
+    background: url(../img/side-list-icon.png) no-repeat -31px -107px;
+    width: 20px;
+    height: 20px;
+    overflow:hidden;
+    float: left;
+    margin:10px 14px 0 11px;
+}
+
+.right-menu .rightnav-toselect-effectlist .effect-tit .effect-tit-ul .effect-tit-li,
+.right-menu .rightnav-selected-effectlist .effect-tit .effect-tit-ul .effect-tit-li{
+    background:#ff6600;
+    color:#fff;
+    border-radius: 2px;
+}
+
+
+
+.right-menu .rightnav-toselect-effectlist .effect-cat-list-ul,
+.right-menu .rightnav-selected-effectlist .effect-selected-list-ul{
+	background:#F2F2F2;
+	width:100%;
+	height:100%;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	
+}
+
+.right-menu .rightnav-toselect-effectlist .effect-cat-list-ul .effect-cat-list-li,
+.right-menu .rightnav-selected-effectlist .effect-selected-list-ul .effect-selected-list-li{
+    float:left;
+    width:100%;
+    height:32px;
+    line-height:32px;
+    font-size:15px;
+    color: #2C2C2C;
+    background: #F2F2F2;
+    cursor:pointer;
+}
+
+.right-menu .rightnav-selected-effectlist .effect-selected-list-ul .effect-selected-list-li {
+	cursor:default;
+}
+
+.right-menu .rightnav-toselect-effectlist .effect-cat-list-ul .effect-cat-list-li:hover,
+.right-menu .rightnav-selected-effectlist .effect-selected-list-ul .effect-selected-list-li:hover {
+	color: #F2F2F2;
+
+	background: #FF6600;
+}
+
+
+
+.right-menu .rightnav-toselect-effectlist .effect-cat-list-ul .effect-cat-list-li .icon,
+.right-menu .rightnav-selected-effectlist .effect-selected-list-ul .effect-selected-list-li .icon {
+	display: inline-block;
+    background: url(../img/side-list-icon.png) no-repeat 0 -131px;
+    width: 20px;
+    height: 20px;
+    overflow:hidden;
+    float: left;
+    margin:10px 14px 0 11px;
+}
+
+.right-menu .rightnav-selected-effectlist .effect-selected-list-ul .effect-selected-list-li .icon {
+	background: url(../img/side-list-icon.png) no-repeat 0 -50px;
+}
+
+.right-menu .rightnav-toselect-effectlist .effect-cat-list-ul .effect-cat-list-li:hover .icon{
+	background-position: -31px -131px;
+}
+
+.right-menu .rightnav-selected-effectlist .effect-selected-list-ul .effect-selected-list-li:hover .icon {
+	background-position: -31px -50px;	
+}
+
+.right-menu .rightnav-selected-effectlist .effect-selected-list-ul .effect-selected-list-li .delete {
+	display: inline-block;
+    background: url(../img/side-list-icon.png) no-repeat 0 -210px;
+    width: 20px;
+    height: 20px;
+    overflow:hidden;
+    float: right;
+    margin:10px 1px 0 0;
+    cursor: pointer;
+}
+
+.right-menu .rightnav-selected-effectlist .effect-selected-list-ul .effect-selected-list-li .delete:hover {
+	background-position: -31px -210px;
+}
+
+.right-menu .rightnav-toselect-effectlist .effect-cat-list-ul ul {
+	padding-left: 45px;
+
+}
+
+.right-menu .rightnav-toselect-effectlist .effect-cat-list-ul ul li {
+	float:left;
+    width:100%;
+    height:32px;
+    line-height:32px;
+    font-size:12px;
+/*    color: #2C2C2C;*/
+    color: #BBBBBB;
+    background: #F2F2F2;
+    cursor:pointer;
+}
+
+.right-menu .rightnav-toselect-effectlist .effect-cat-list-ul ul li:hover {
+	color: #F2F2F2;
+	background: #FF6600;
+}
+
+.right-menu .rightnav-toselect-effectlist .effect-cat-list-ul .hide-effects {
+		display: none;
+}
+
+.right-menu .f-line {
+	margin-top: 1px;
+    width: 100%;
+    height: 2px;
+    background: #3f3f3f;
+}
+
+
+.right-menu .right-footer .right-footer-btn-ul { padding: 8px 10px 0px; }
+
+.right-menu .right-footer .right-footer-btn-ul .right-footer-btn {
+	cursor: pointer;
+	
+/*    float: left;*/
+    width: 50%;
+    margin-right: 25%;
+    margin-left: 25%;
+    line-height: 30px;
+    background: #F2F2F2;
+
+    font-size: 15px;
+    border: #FF6600;
+    border-style:solid;
+    border-width: 1px;
+    border-radius: 1px;
+    text-align: center;
+    
+/*    margin: 0px 5px;*/
+}
+
+.right-menu .right-footer .right-footer-btn-ul .right-footer-btn a { color: #FF6600; }
+
+.right-menu .right-footer .right-footer-btn-ul .right-footer-btn:hover a { color: #F2F2F2; }
+.right-menu .right-footer .right-footer-btn-ul .right-footer-btn:hover {background: #FF6600;}
+
+/*导航收起状态*/
+.right-menu .right-small{ width: 50px; }
+
+.right-menu .small-nav ul li a{
+    text-align: center;
+    display: block;
+    color: #c6c6c6;
+    text-align: center;
+    height: 44px;
+    padding: 18px 0;
+}
+
+.right-menu .small-nav ul li a:hover{
+	cursor: pointer; 
+    color: #fff;
+    background: #1b1b1b;
+}
+
+.right-menu .small-nav ul li.line{
+    height: 0;
+    font-size: 0;
+    border-bottom: 1px solid #323232;
+    border-top: 1px solid #1b1b1b;
+}
+
+.right-menu .small-nav ul li .icon{
+    display:block;
+    background: url(../img/side-list-icon.png) no-repeat -500px -500px;
+    width: 20px;
+    height: 20px;
+    overflow:hidden;
+    margin-right: 15px;
+    margin-bottom:5px;
+    *margin-right: 0;
+}
+
+.right-menu .small-nav ul li .is1 { background-position: 0 0 }
+.right-menu .small-nav ul li .is2 { background-position:0 -182px;}
+.right-menu .small-nav ul li .is3 { background-position:0 -26px;}
+
+.right-menu .small-nav ul li a:hover .is1 { background-position:-31px 0}
+.right-menu .small-nav ul li a:hover .is2 { background-position: -31px -182px }
+.right-menu .small-nav ul li a:hover .is3 { background-position: -31px -26px }
+
+/*关闭按钮*/
+.right-menu .right-btn{
+    position: absolute;
+    top: 40%;
+    right: 244px;
+    z-index: 10;
+    overflow: hidden;
+    cursor: pointer;
+    width: 15px;
+    height: 150px;
+    display: block;
+    background-color: transparent
+}
+
+.right-menu .right-btn:hover {
+    background-color: transparent
+}
+
+.right-menu .right-btn span {
+    width: 15px;
+    height: 150px;
+    position: absolute;
+    top: 0;
+    right: -1px;
+    display: block;
+    background: url(../img/side-right-shrink.png) no-repeat
+}
+
+.right-menu .right-btn span {
+	background-position: -22px 0
+    
+}
+
+.right-menu .right-btn span:hover {
+    background-position: 0 0
+}
+
+.right-menu.small .right-btn span {
+    background-position: -22px -151px
+}
+
+.right-menu.small .right-btn span:hover {
+    
+    background-position: 0 -151px
+}
+
+/*逻辑控制*/
+.right-menu .right-small { display: none; }
+.right-menu.small .right-big { display: none; }
+.right-menu.small .right-small { display: block; }
+.right-menu.small .right-btn { right: 50px; }

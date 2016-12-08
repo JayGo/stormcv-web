@@ -1,0 +1,253 @@
+/* Source: css/left.css*/
+
+/*导航栏的基本状态*/
+.left-menu {     
+    background: #2c2c2c;
+}
+
+/*导航展开状态*/
+/*11个列表高度加上最上面的20px margin，目的是通过.leftnav-camlist中固定显示的10项摄像头高度来指定父级div的高度，从而让*/
+/*.left-footer紧靠着.leftnav-camlist显示，根本原因是.cam-tit-ul的高度不能通过百分比确定，此处的百分比是相对于里面li元素的高度*/
+.left-menu .left-big{   
+    width: 244px;
+    height: calc(11*32px + 20px); 
+    color: #c6c6c6;   
+}
+
+/*导航展开状态下的CSS样式：*/
+/*拉动条*/
+
+/*摄像头列表*/
+.left-menu .leftnav-camlist{ 
+    padding-top: 20px;
+    color:#c6c6c6;
+    height: 100%;
+    display: block;
+	
+}
+
+.left-menu .leftnav-camlist .cam-tit{
+    width:206px;
+    margin: 0 auto;
+    height:32px;
+    border-bottom:1px solid #2c2c2c;
+}
+
+.left-menu .leftnav-camlist .cam-tit .cam-tit-ul .cam-tit-li{
+    float:left;
+    width:100%;
+    height:32px;
+    line-height:32px;
+    font-size:15px;
+    cursor:default;
+}
+
+.left-menu .leftnav-camlist .cam-tit .cam-tit-ul .cam-tit-li .icon{
+    display: inline-block;
+    background: url(../img/side-list-icon.png) no-repeat -31px -107px;
+    width: 20px;
+    height: 20px;
+    overflow:hidden;
+    float: left;
+    margin:10px 14px 0 11px;
+}
+
+.left-menu .leftnav-camlist .cam-tit .cam-tit-ul .cam-tit-li{
+    background:#ff6600;
+    color:#fff;
+    border-radius: 2px;
+}
+
+
+
+.left-menu .leftnav-camlist .camlist-ul{
+	background:#F2F2F2;
+	width:100%;
+	height:100%;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	
+}
+
+.left-menu .leftnav-camlist .camlist-ul .camlist-li{
+    float:left;
+    width:100%;
+    height:32px;
+    line-height:32px;
+    font-size:15px;
+    color: #2C2C2C;
+    background: #F2F2F2;
+    cursor:pointer;
+}
+
+.left-menu .leftnav-camlist .camlist-ul .camlist-li:hover {
+	color: #F2F2F2;
+	background: #FF6600;
+}
+
+
+.left-menu .leftnav-camlist .camlist-ul .camlist-li .icon{
+	display: inline-block;
+    background: url(../img/side-list-icon.png) no-repeat 0 0;
+    width: 20px;
+    height: 20px;
+    overflow:hidden;
+    float: left;
+    margin:10px 14px 0 11px;
+}
+
+.left-menu .leftnav-camlist .camlist-ul .camlist-li:hover .icon{
+	background-position: -31px 0;
+}
+
+.left-menu .leftnav-camlist .camlist-ul .camlist-li .delete {
+	display: inline-block;
+    background: url(../img/side-list-icon.png) no-repeat 0 -210px;
+    width: 20px;
+    height: 20px;
+    overflow:hidden;
+    float: right;
+    margin:10px 1px 0 0;
+    cursor: pointer;
+}
+
+.left-menu .leftnav-camlist .camlist-ul .camlist-li .delete:hover {
+	background-position: -31px -210px;
+}
+
+/*底部*/
+.left-menu .left-footer {
+    background: #2c2c2c;
+    width: 210px;
+    padding: 0 17px 17px;
+    left: 0px;
+    display: block;
+
+/*	bottom: 0px;*/
+}
+
+.left-menu .left-footer .f-line {
+	margin-top: 1px;
+    width: 100%;
+    height: 2px;
+    background: #3f3f3f;
+}
+
+.left-menu .left-footer .left-footer-btn-ul { padding: 8px 10px 0px; }
+
+.left-menu .left-footer .left-footer-btn-ul .left-footer-btn {
+	cursor: pointer;
+	
+    float: left;
+    width: 45%;
+    margin-left: 2%;
+    line-height: 30px;
+    background: #F2F2F2;
+
+    font-size: 15px;
+    border: #FF6600;
+    border-style:solid;
+    border-width: 1px;
+    border-radius: 1px;
+    text-align: center;
+}
+
+.left-menu .left-footer .left-footer-btn-ul .left-footer-btn a { color: #FF6600; }
+
+.left-menu .left-footer .left-footer-btn-ul .left-footer-btn:hover a { color: #F2F2F2; }
+.left-menu .left-footer .left-footer-btn-ul .left-footer-btn:hover {background: #FF6600;}
+
+
+/*导航收起状态*/
+.left-menu .left-small{ width: 50px; }
+
+.left-menu .small-nav ul li a{
+    text-align: center;
+    display: block;
+    color: #c6c6c6;
+    text-align: center;
+    height: 44px;
+    padding: 18px 0;
+}
+
+.left-menu .small-nav ul li a:hover{
+	cursor: pointer; 
+    color: #fff;
+    background: #1b1b1b;
+}
+
+.left-menu .small-nav ul li.line{
+    height: 0;
+    font-size: 0;
+    border-bottom: 1px solid #323232;
+    border-top: 1px solid #1b1b1b;
+}
+
+.left-menu .small-nav ul li .icon{
+    display:block;
+    background: url(../img/side-list-icon.png) no-repeat -500px -500px;
+    width: 20px;
+    height: 20px;
+    overflow:hidden;
+    margin-left: 15px;
+    margin-bottom:5px;
+    *margin-left: 0;
+}
+
+.left-menu .small-nav ul li .is1 { background-position: 0 0 }
+.left-menu .small-nav ul li .is2 { background-position:0 -182px;}
+.left-menu .small-nav ul li .is3 { background-position:0 -26px;}
+
+.left-menu .small-nav ul li a:hover .is1 { background-position:-31px 0}
+.left-menu .small-nav ul li a:hover .is2 { background-position: -31px -182px }
+.left-menu .small-nav ul li a:hover .is3 { background-position: -31px -26px }
+
+/*关闭按钮*/
+.left-menu .left-btn{
+    position: absolute;
+    top: 40%;
+    left: 244px;
+    z-index: 10;
+    overflow: hidden;
+    cursor: pointer;
+    width: 15px;
+    height: 150px;
+    display: block;
+    background-color: transparent
+}
+
+.left-menu .left-btn:hover {
+    background-color: transparent
+}
+
+.left-menu .left-btn span {
+    width: 15px;
+    height: 150px;
+    position: absolute;
+    top: 0;
+    left: -1px;
+    display: block;
+    background: url(../img/side-left-shrink.png) no-repeat
+}
+
+.left-menu .left-btn span {
+    background-position: 0 0
+}
+
+.left-menu .left-btn span:hover {
+    background-position: -22px 0
+}
+
+.left-menu.small .left-btn span {
+    background-position: 0 -151px
+}
+
+.left-menu.small .left-btn span:hover {
+    background-position: -22px -151px
+}
+
+/*逻辑控制*/
+.left-menu .left-small { display: none; }
+.left-menu.small .left-big { display: none; }
+.left-menu.small .left-small { display: block; }
+.left-menu.small .left-btn { left: 50px; }

@@ -1,0 +1,85 @@
+@charset "utf-8";
+
+/* Source: css/header.css*/
+
+#header .placeholder { color: #aaa; }
+
+#header .head {
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+    height: 100%;
+}
+
+#header .head-logo {
+    display: block;
+    padding-top: 8px;
+    height: 35px;
+    width: 35px;
+    background: url(../img/logo.png) 0 8px no-repeat;
+}
+
+#header .head-nav {
+    padding: 10px 0 0 30px;
+    position: relative;
+   *position: static;
+}
+
+#header .head-nav>li {
+    font-size: 20px;
+    line-height: 30px;
+    padding: 0 10px;
+    position: relative;
+    cursor: pointer;
+}
+
+#header .head-nav>li>a {
+    display: block;
+    padding: 0 10px;
+    color: #444;
+}
+
+#header .head-nav>li>a:hover,
+#header .head-nav>li.current a {
+    color: #fff;
+    background: #FF7700;
+    border-radius: 3px;
+}
+
+#header .icofont {
+    display: inline-block;
+    width: 18px;
+    height: 20px;
+    background: url(../img/head-icos.png) no-repeat -500px -500px;
+    *margin-right: 6px;
+    *margin-top: -1px;
+}
+
+#header .head-oth {}
+
+#header .head-oth .o-unlogin { padding-top: 15px; }
+
+#header .head-oth .o-unlogin .u-login,
+#header .head-oth .o-unlogin .u-reg,
+#header .head-oth .o-unlogin>em {
+    vertical-align: top;
+    line-height: 20px;
+    color: #868686;
+}
+
+#header .head-oth .o-unlogin.open .u-txt,
+#header .head-oth .o-unlogin .u-login:hover,
+#header .head-oth .o-unlogin .u-reg:hover {
+	color: #f70; 
+}
+
+#header .head-oth .o-unlogin .u-login,
+#header .head-oth .o-unlogin .u-reg {
+    display: inline-block;
+    padding: 0 4px;
+    line-height: 20px;
+    color: #868686;
+}
+
+#header .head-oth .o-unlogin .icofont { background-position: 0 -100px; }
+#header .head-oth .o-unlogin.open .icofont { background-position: -23px -100px; }
