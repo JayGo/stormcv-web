@@ -16,8 +16,8 @@ public class CaptureDispatcher {
 	private final int serverMsgPort = 8998;
 	private final int serverDataPort = 8999;
 
-	private final String stormMaster = "10.134.142.100";
-	private final int stormcvCoreMsgPort = 9000;
+	private final String stormMaster = "10.134.142.114";
+	private final int stormcvCoreMsgPort = 8999;
 
 //	private static String[] serverIps = { "10.134.142.101", "10.134.142.104", "10.134.142.106", "10.134.142.107",
 //			"10.134.142.108", "10.134.142.109", "10.134.142.111", "10.134.142.115", "10.134.142.116", "10.134.142.117",
@@ -30,7 +30,7 @@ public class CaptureDispatcher {
 	
 	private static Map<String, List<String>> serverStatusMap;
 
-	private static String[] rtmpServers = { "rtmp://10.134.142.100:1935/live1/" };
+	private static String[] rtmpServers = { "rtmp://10.134.142.141:1935/live1/" };
 	private static Map<String, Integer> rtmpServerMap;
 
 	public CaptureDispatcher() {
@@ -44,6 +44,45 @@ public class CaptureDispatcher {
 		for (int i = 0; i < rtmpServers.length; i++) {
 			rtmpServerMap.put(rtmpServers[i], 0);
 		}
+	}
+	
+	public BaseMessage sendStartMessageToStorm(BaseMessage msg) {
+		BaseMessage result = new BaseMessage(ResultCode.NO_SERVER_AVAILABLE);
+		String camAddr = msg.getAddr();
+		String streamId = msg.getStreamId();
+		EffectMessage emsg = null;
+
+		boolean isEffectMessage = msg instanceof EffectMessage;
+		if (isEffectMessage) {
+			emsg = (EffectMessage) msg;
+		}
+		
+		TCPClient client2 = new TCPClient(stormMaster, stormcvCoreMsgPort);
+
+		String stormRTMPAddr = getSuitableRTMPServer();
+
+		if (!isEffectMessage) {
+			msg.setRtmpAddr(stormRTMPAddr);
+			msg.setCode(RequestCode.START_STORM);
+			result = client2.sendMsg(msg);
+			System.out.println("send startStorm: " + msg);
+		} else {
+			emsg.setRtmpAddr(stormRTMPAddr);
+			emsg.setCode(RequestCode.START_EFFECT_STORM);
+			result = client2.sendMsg(emsg);
+			System.out.println("send startEffectStorm: " + emsg);
+		}
+		System.out.println("client2's respond: "+result);
+		// =================== End of CaptureService test =====================
+		if (result.getCode() == ResultCode.RESULT_OK) {
+			result.setAddr(camAddr);
+			result.setCode(ResultCode.RESULT_OK);
+			result.setRtmpAddr(stormRTMPAddr);
+			result.setStreamId(streamId);
+			return result;
+		}
+		
+		return result;
 	}
 
 	// find suitable server to decode video stream

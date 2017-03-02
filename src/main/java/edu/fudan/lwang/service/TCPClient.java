@@ -54,9 +54,9 @@ public class TCPClient {
 				result=(BaseMessage) ios.readObject();
 			}
 						
-			oos.flush();
-			oos.close();
-			ios.close();
+//			oos.flush();
+//			oos.close();
+//			ios.close();
 			
 			// socket.close();
 		} catch (EOFException e) {

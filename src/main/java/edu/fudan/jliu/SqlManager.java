@@ -25,6 +25,8 @@ public class SqlManager {
 	private final String GRAY_EFFECT_LIST_COLS = "(STREAM_ID,RTMP_ADDR,R_WEIGHT,G_WEIGHT,B_WEIGHT)";
 	private final String CANNY_EDGE_EFFECT_LIST_TABLE = "CANNY_EDGE_EFFECT_LIST";
 	private final String CANNY_EFFECT_LIST_COLS = "(STREAM_ID,RTMP_ADDR,LOW_TH,HIGH_TH)";
+	private final String COLOR_HISTOGRAM_EFFECT_LIST_TABLE = "COLOR_HISTOGRAM_EFFECT_LIST";
+	private final String COLOR_HISTOGRAM_EFFECT_LIST_COLS = "(STREAM_ID,RTMP_ADDR,R_WEIGHT,G_WEIGHT,B_WEIGHT)";
 	private final String[] EFFECT_TABLE_SET = { GRAY_EFFECT_LIST_TABLE, CANNY_EDGE_EFFECT_LIST_TABLE };
 
 	private Connection connection = null;
@@ -132,6 +134,15 @@ public class SqlManager {
 						effectType = EffectType.CANNY_EFFECT;
 						break;
 					}
+					case COLOR_HISTOGRAM_EFFECT_LIST_TABLE: {
+						parameters.put("r", rs.getDouble("R_WEIGHT"));
+						parameters.put("g", rs.getDouble("G_WEIGHT"));
+						parameters.put("b", rs.getDouble("B_WEIGHT"));
+						effectType = EffectType.COLOR_HISTOGRAM;
+						break;
+					}
+					default:
+						break;
 					}
 
 					result.add(new EffectMessage(ResultCode.RESULT_OK, null, rtmpAddr, effectStreamId, effectType, parameters));
@@ -193,6 +204,13 @@ public class SqlManager {
 			paraStr += parameters.get("l_th") + ", " + parameters.get("h_th");
 			break;
 		}
+		case EffectType.COLOR_HISTOGRAM: {
+			table = COLOR_HISTOGRAM_EFFECT_LIST_TABLE;
+			cols = COLOR_HISTOGRAM_EFFECT_LIST_COLS;
+			paraStr += parameters.get("r") + ", " + parameters.get("g") + ", " + parameters.get("b");
+			break;
+		}
+		
 		default:
 			break;
 		}
@@ -221,6 +239,7 @@ public class SqlManager {
 					+ cam.getRtmpAddr() + "', '"+cam.getAddr()+"');";
 			// System.out.println("insert sql is:" + sql);
 			stmt.executeUpdate(sql);
+			System.out.println("Add camera to sql: "+cam);
 			connection.commit();
 			stmt.close();
 		} catch (SQLException e) {

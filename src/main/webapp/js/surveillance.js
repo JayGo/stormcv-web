@@ -4,10 +4,10 @@ function GetRequest() {
 	var url = location.search; // »ñÈ¡urlÖÐ"?"·ûºóµÄ×Ö´®
 	// alert(url);
 	var theRequest = new Object();
-	if (url.indexOf("?") != -1) {
+	if(url.indexOf("?") != -1) {
 		var str = url.substr(1);
 		strs = str.split("&");
-		for (var i = 0; i < strs.length; i++) {
+		for(var i = 0; i < strs.length; i++) {
 			theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
 		}
 	}
@@ -15,7 +15,7 @@ function GetRequest() {
 }
 
 function sleep(d) {
-	for (var t = Date.now(); Date.now() - t <= d;);
+	for(var t = Date.now(); Date.now() - t <= d;);
 }
 
 function play(playerId, cilpUrl, rtmpUrl) {
@@ -35,7 +35,7 @@ function play(playerId, cilpUrl, rtmpUrl) {
 }
 
 function submit(effect) {
-	if (effect != null && effect != "none") {
+	if(effect != null && effect != "none") {
 		$.ajax({
 			type: "GET",
 			url: "./api/v1/camera/startEffect?effect=" + effect + "&addr=" + addr,
@@ -43,7 +43,7 @@ function submit(effect) {
 			contentType: "application/json",
 			async: true,
 			success: function(data, textStatus, jqXHR) {
-				if (data.code == 0) {
+				if(data.code == 0) {
 					var msgs = data.message.split(",");
 					var rtmpAddr = msgs[0];
 					var rtmpAddrs = rtmpAddr.split("/");
@@ -60,35 +60,52 @@ function submit(effect) {
 
 function checkEffect(effectValue) {
 	// alert();
-	switch (effectValue) {
+	switch(effectValue) {
 		case 'gray':
-			{
-				// alert("gray");
-				if (!$("#canny-parameter-list").hasClass("hidden")) {
-					$("#canny-parameter-list").addClass("hidden");
-				}
-				if ($("#gray-parameter-list").hasClass("hidden")) {
-					$("#gray-parameter-list").removeClass("hidden");
-				}
 
-				//	$("#dialog-form .parameter-list").append(createLi("R", "INPUT_PARA"));
-				//	$("#dialog-form .parameter-list").append(createLi("G", "INPUT_PARA"));
-				//	$("#dialog-form .parameter-list").append(createLi("B", "INPUT_PARA"));
-				break;
+			if($("#gray-parameter-list").hasClass("hidden")) {
+				$("#gray-parameter-list").removeClass("hidden");
 			}
+
+			if(!$("#canny-parameter-list").hasClass("hidden")) {
+				$("#canny-parameter-list").addClass("hidden");
+			}
+
+			if(!$("#histogram-parameter-list").hasClass("hidden")) {
+				$("#histogram-parameter-list").addClass("hidden");
+			}
+			break;
+
 		case 'cannyEdge':
-			// alert("cannyEdge");
-			if (!$("#gray-parameter-list").hasClass("hidden")) {
+		
+			if(!$("#gray-parameter-list").hasClass("hidden")) {
 				$("#gray-parameter-list").addClass("hidden");
 			}
-			if ($("#canny-parameter-list").hasClass("hidden")) {
+
+			if($("#canny-parameter-list").hasClass("hidden")) {
 				$("#canny-parameter-list").removeClass();
 			}
 
+			if(!$("#histogram-parameter-list").hasClass("hidden")) {
+				$("#histogram-parameter-list").addClass("hidden");
+			}
 			break;
-		case 'color_histogram':
-			// alert("colorHistogram");
+			
+		case 'colorHistogram':
+		
+			if(!$("#gray-parameter-list").hasClass("hidden")) {
+				$("#gray-parameter-list").addClass("hidden");
+			}
+
+			if(!$("#canny-parameter-list").hasClass("hidden")) {
+				$("#canny-parameter-list").addClass("hidden");
+			}
+
+			if($("#histogram-parameter-list").hasClass("hidden")) {
+				$("#histogram-parameter-list").removeClass();
+			}
 			break;
+			
 		case 'foreground_extraction':
 			// alert("foregroundExtraction");
 			break;
@@ -113,7 +130,7 @@ function addCameraToBox(rtmpAddr, effectStreamId, effectType, parameters, id) {
 	var paraSection = $("#box" + id + " .boxarea .mes p");
 	var paraItem = document.querySelector("#parameters-list-template");
 
-	for (var i in parameters) {
+	for(var i in parameters) {
 		// alert("shuchu:" + i + ":" + parameters[i]);
 		paraItem.content.querySelector("label").for = i + "";
 		paraItem.content.querySelector("label").innerHTML = i;
@@ -169,8 +186,8 @@ function commitChangeParas(obj) {
 	var childs = p.children;
 	// alert(childs.length);
 	$(obj).prev().removeClass("hidden");
-	for (var i = 0; i < childs.length; i++) {
-		if (childs[i].nodeName == "INPUT") {
+	for(var i = 0; i < childs.length; i++) {
+		if(childs[i].nodeName == "INPUT") {
 			childs[i].setAttribute("disabled", "true");
 		}
 	}
@@ -184,8 +201,8 @@ function changeParas(obj) {
 	var childs = p.children;
 	// alert(childs.length);
 	$(obj).next().removeClass("hidden");
-	for (var i = 0; i < childs.length; i++) {
-		if (childs[i].nodeName == "INPUT") {
+	for(var i = 0; i < childs.length; i++) {
+		if(childs[i].nodeName == "INPUT") {
 			childs[i].removeAttribute("disabled");
 		}
 	}
@@ -212,11 +229,11 @@ function initCameraList() {
 		dataType: "json",
 		contentType: "application/json",
 		success: function(data, textStatus, jqXHR) {
-			if (data.length == 0) {
+			if(data.length == 0) {
 				alert("Camera list is empty!");
 			} else {
 
-				for (var i = 0; i < data.length; i++) {
+				for(var i = 0; i < data.length; i++) {
 					var id = cameraCount;
 					var streamId = data[i].streamId;
 
@@ -236,7 +253,7 @@ function initCameraList() {
 
 function clearCameraBox() {
 	var boxListLength = $(".play-list li").length;
-	for (var i = 1; i < boxListLength; i++) {
+	for(var i = 1; i < boxListLength; i++) {
 		$("#box" + i).remove();
 		effectStreamCount--;
 		// alert("effectStreamCount: "+effectStreamCount);
@@ -253,8 +270,8 @@ function updateEffectCameraBox() {
 		dataType: "json",
 		contentType: "application/json",
 		success: function(data, textStatus, jqXHR) {
-			if (data != undefined) {
-				for (var i = 0; i < data.length; i++) {
+			if(data != undefined) {
+				for(var i = 0; i < data.length; i++) {
 					var effectStreamId = data[i].streamId;
 					var rtmpAddr = data[i].rtmpAddr;
 					var effectType = data[i].effectType;
@@ -294,7 +311,7 @@ function updateRawCameraBox() {
 		contentType: "application/json",
 		success: function(data, textStatus, jqXHR) {
 
-			if (data.code == 0) {
+			if(data.code == 0) {
 				rtmpAddr = data.rtmpAddr;
 				streamId = data.streamId;
 				alert("rtmpAddr: " + rtmpAddr);
@@ -320,7 +337,7 @@ function getNowPageRawStreamId() {
 	strs1 = pathName.split("/");
 	var pageName = strs1[strs1.length - 1];
 
-	if (pageName == "")
+	if(pageName == "")
 		return pageName;
 
 	var strs2 = new Array();
@@ -341,7 +358,7 @@ jQuery(document).ready(function($) {
 
 	// alert(getNowPageCamId());
 	var resId = getNowPageRawStreamId();
-	if (resId != "")
+	if(resId != "")
 		nowRawStreamId = resId;
 	alert("now xxxx: " + resId);
 
@@ -428,11 +445,11 @@ jQuery(document).ready(function($) {
 				// var paraDicStrForJava = "{\"entry\":[";
 				// --- For jackson-json
 				var paraLis = paraUl.children("li");
-				for (var i = 0; i < paraLis.length; i++) {
+				for(var i = 0; i < paraLis.length; i++) {
 					var childs = paraLis[i].children;
 					var input;
-					for (var j = 0; j < childs.length; j++) {
-						if (childs[j].nodeName == "INPUT") {
+					for(var j = 0; j < childs.length; j++) {
+						if(childs[j].nodeName == "INPUT") {
 							input = childs[j];
 							break;
 						}
@@ -464,7 +481,7 @@ jQuery(document).ready(function($) {
 					}),
 					async: false,
 					success: function(data, textStatus, jqXHR) {
-						if (data.code == 0) {
+						if(data.code == 0) {
 							var rtmpAddr = data.rtmpAddr;
 							var effectStreamId = data.streamId;
 							addCameraToBox(rtmpAddr, effectStreamId, effectType, paraDic, effectStreamCount);
@@ -506,7 +523,7 @@ jQuery(document).ready(function($) {
 		var name = "摄像头" + cameraCount;
 		// 填充左侧摄像头列表
 
-		if (addAddr) {
+		if(addAddr) {
 			// 提交用户输入的地址
 			$.ajax({
 				type: "POST",
@@ -521,12 +538,12 @@ jQuery(document).ready(function($) {
 				}),
 				async: false,
 				success: function(data, textStatus, jqXHR) {
-					if (data.code == 0) {
+					if(data.code == 0) {
 						var id = cameraCount;
 						var streamId = data.streamId;
 						// 填充左侧摄像头列表
 						addCameraToList(streamId, id);
-					} else if (data.code == -1) {
+					} else if(data.code == -1) {
 						alert("添加失败：该摄像头已存在！");
 					} else {
 						alert("Error code: " + data.code);

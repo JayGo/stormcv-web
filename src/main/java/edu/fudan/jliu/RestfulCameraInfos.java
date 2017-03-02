@@ -34,8 +34,6 @@ public class RestfulCameraInfos {
 	// static private String dirString =
 	// "/home/jliu/workspace/simple-service-webapp/src/main/webapp/";
 
-	private String dispatcherServerIp = "10.134.142.100";
-	private int dispatcherServerPort = 8999;
 
 	private static CaptureDispatcher captureDispatcher = new CaptureDispatcher();
 
@@ -77,6 +75,8 @@ public class RestfulCameraInfos {
 	public BaseMessage addCamera(BaseMessage cam) {
 
 		BaseMessage respond = new BaseMessage(ResultCode.UNKNOWN_ERROR);
+		
+		System.out.println(cam);
 
 		String addr = cam.getAddr();
 
@@ -90,9 +90,13 @@ public class RestfulCameraInfos {
 		String streamId = generateStreamId(cam);
 		cam.setStreamId(streamId);
 
-		// For storm-zip test
-		respond = captureDispatcher.dispatchStartMessage(cam);
-		// end of storm-zip test
+		// respond = captureDispatcher.sendStartMessageToStorm(cam);
+		
+		// For test
+		respond.setAddr(addr);
+		respond.setStreamId(streamId);
+		respond.setCode(ResultCode.RESULT_OK);
+		
 		if (respond.getCode() == ResultCode.RESULT_OK) {
 			cpg.createPage(streamId);
 			sm.addCamera(respond);
@@ -138,14 +142,14 @@ public class RestfulCameraInfos {
 			return respond;
 		}
 
-		// ============ For storm-zip test ===========
 		String rawAddr = sm.getRawAddr(rawStreamId);
 		effectMessage.setAddr(rawAddr);
 		effectMessage.setCode(RequestCode.START_EFFECT);
 		String effectStreamId = generateStreamId(effectMessage);
 		effectMessage.setStreamId(effectStreamId);
 
-		respond = captureDispatcher.dispatchStartMessage(effectMessage);
+		// respond = captureDispatcher.dispatchStartMessage(effectMessage);
+		respond = captureDispatcher.sendStartMessageToStorm(effectMessage);
 
 		if (respond.getCode() == ResultCode.RESULT_OK) {
 			effectMessage.setRtmpAddr(respond.getRtmpAddr());
@@ -177,5 +181,12 @@ public class RestfulCameraInfos {
 		}
 
 		return (ArrayList<EffectMessage>) sm.getEffectVideoList(nowRawStreamId);
+	}
+	
+	@GET
+	@Path("/helloWorld")
+	@Produces(MediaType.APPLICATION_XML)
+	public String getHello() {
+		return "Hello world!";
 	}
 }
