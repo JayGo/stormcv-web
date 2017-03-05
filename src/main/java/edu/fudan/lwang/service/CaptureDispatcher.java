@@ -48,8 +48,6 @@ public class CaptureDispatcher {
 	
 	public BaseMessage sendStartMessageToStorm(BaseMessage msg) {
 		BaseMessage result = new BaseMessage(ResultCode.NO_SERVER_AVAILABLE);
-		String camAddr = msg.getAddr();
-		String streamId = msg.getStreamId();
 		EffectMessage emsg = null;
 
 		boolean isEffectMessage = msg instanceof EffectMessage;
@@ -59,28 +57,16 @@ public class CaptureDispatcher {
 		
 		TCPClient client2 = new TCPClient(stormMaster, stormcvCoreMsgPort);
 
-		String stormRTMPAddr = getSuitableRTMPServer();
-
 		if (!isEffectMessage) {
-			msg.setRtmpAddr(stormRTMPAddr);
 			msg.setCode(RequestCode.START_STORM);
 			result = client2.sendMsg(msg);
 			System.out.println("send startStorm: " + msg);
 		} else {
-			emsg.setRtmpAddr(stormRTMPAddr);
 			emsg.setCode(RequestCode.START_EFFECT_STORM);
 			result = client2.sendMsg(emsg);
 			System.out.println("send startEffectStorm: " + emsg);
 		}
 		System.out.println("client2's respond: "+result);
-		// =================== End of CaptureService test =====================
-		if (result.getCode() == ResultCode.RESULT_OK) {
-			result.setAddr(camAddr);
-			result.setCode(ResultCode.RESULT_OK);
-			result.setRtmpAddr(stormRTMPAddr);
-			result.setStreamId(streamId);
-			return result;
-		}
 		
 		return result;
 	}

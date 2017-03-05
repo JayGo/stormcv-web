@@ -1,5 +1,6 @@
 package edu.fudan.jliu;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -90,16 +91,17 @@ public class RestfulCameraInfos {
 		String streamId = generateStreamId(cam);
 		cam.setStreamId(streamId);
 
-		// respond = captureDispatcher.sendStartMessageToStorm(cam);
+		respond = captureDispatcher.sendStartMessageToStorm(cam);
 		
 		// For test
-		respond.setAddr(addr);
-		respond.setStreamId(streamId);
-		respond.setCode(ResultCode.RESULT_OK);
+//		respond.setAddr(addr);
+//		respond.setStreamId(streamId);
+//		respond.setCode(ResultCode.RESULT_OK);
 		
 		if (respond.getCode() == ResultCode.RESULT_OK) {
 			cpg.createPage(streamId);
 			sm.addCamera(respond);
+
 		}
 
 		print("add - " + respond.toString());
@@ -155,6 +157,8 @@ public class RestfulCameraInfos {
 			effectMessage.setRtmpAddr(respond.getRtmpAddr());
 			sm.addEffect(effectMessage);
 			print("addEffect - " + effectMessage);
+			respond = effectMessage;
+			respond.setCode(ResultCode.RESULT_OK);
 		}
 
 		print("addEffect respond - " + respond.toString());

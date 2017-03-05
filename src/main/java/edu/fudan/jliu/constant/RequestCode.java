@@ -13,4 +13,6 @@ public class RequestCode {
 	public static final int END_EFFECT = 10;
 	public static final int END_EFFECT_BY_MASTER = 11;
 	public static final int END_EFFECT_STORM = 12;
+	
+	public static final int PIC_PROCCESS = 13;
 }

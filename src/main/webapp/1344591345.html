@@ -101,7 +101,7 @@
 									<template id="camli-template">
 										<li id="" class="camlist-li"><i class="icon"></i>
 											<a class="switch-cam" href=""> <span></span></a>
-												<p class="hidden"></p>
+											<p class="hidden"></p>
 											<i class="delete"></i>
 										</li>
 									</template>
@@ -154,9 +154,10 @@
 							<option value='cannyEdge'>Canny边缘</option>
 							<option value='colorHistogram'>颜色直方图</option>
 							<option value='foregroundExtraction'>前景提取</option>
+							<option value='faceDetect'>人脸检测</option>
 						</select>
 						<p class="parameter-tip ">指定参数：</p>
-						<ul id="gray-parameter-list" class="hidden">
+						<ul id="gray-parameter-list">
 							<li>
 								<label for="r">R: </label>
 								<input type="text" name="r" class="text ui-widget-content ui-corner-all ">
@@ -182,6 +183,21 @@
 							</li>
 						</ul>
 
+						<ul id="histogram-parameter-list" class="hidden">
+							<li>
+								<label for="r">R: </label>
+								<input type="text" name="r" class="text ui-widget-content ui-corner-all ">
+							</li>
+							<li>
+								<label for="g">G: </label>
+								<input type="text" name="g" class="text ui-widget-content ui-corner-all ">
+							</li>
+							<li>
+								<label for="b">B: </label>
+								<input type="text" name="b" class="text ui-widget-content ui-corner-all ">
+							</li>
+						</ul>
+
 					</div>
 					<div id="stream-list-content" class="items">
 						<ul id="stream-list-contentbox" class="play-list">
@@ -203,7 +219,7 @@
 
 								</div>
 							</li>
-							
+
 							<template id="stream-box-template">
 								<li style="width: 316.6px;">
 									<div class="boxarea">

@@ -18,10 +18,11 @@ function sleep(d) {
 	for(var t = Date.now(); Date.now() - t <= d;);
 }
 
-function play(playerId, cilpUrl, rtmpUrl) {
+function play(playerId, clipUrl, rtmpUrl) {
+	alert("flow player: "+ rtmpUrl+"&"+clipUrl);
 	flowplayer(playerId, "player/swf/flowplayer-3.2.18.swf", {
 		clip: {
-			url: cilpUrl,
+			url: clipUrl,
 			provider: 'rtmp',
 			live: true,
 		},
@@ -313,12 +314,13 @@ function updateRawCameraBox() {
 
 			if(data.code == 0) {
 				rtmpAddr = data.rtmpAddr;
+				alert("return from server rtmpAddr: "+rtmpAddr);
 				streamId = data.streamId;
 				alert("rtmpAddr: " + rtmpAddr);
 				alert("streamId: " + streamId);
-				rtmpUrl = rtmpAddr + "/" + streamId;
+				completeRtmpUrl = rtmpAddr + "" + streamId;
 				// alert("rawRtmp is: "+rtmpAddr);
-				$("#box0 h3").html(rtmpUrl);
+				$("#box0 h3").html(completeRtmpUrl);
 			} else {
 				alert("Error code:" + data.code);
 			}
