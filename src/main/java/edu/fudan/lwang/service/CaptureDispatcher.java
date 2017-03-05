@@ -56,16 +56,24 @@ public class CaptureDispatcher {
 		}
 		
 		TCPClient client2 = new TCPClient(stormMaster, stormcvCoreMsgPort);
-
-		if (!isEffectMessage) {
-			msg.setCode(RequestCode.START_STORM);
+		
+		switch (msg.getCode()) {
+		case RequestCode.START_STORM:
 			result = client2.sendMsg(msg);
 			System.out.println("send startStorm: " + msg);
-		} else {
-			emsg.setCode(RequestCode.START_EFFECT_STORM);
+			break;
+		
+		case RequestCode.START_EFFECT_STORM:
 			result = client2.sendMsg(emsg);
 			System.out.println("send startEffectStorm: " + emsg);
+			
+		case RequestCode.PIC_PROCESS:
+			result = client2.sendMsg(emsg);
+			System.out.println("send picture process: " + emsg);
+		default:
+			break;
 		}
+
 		System.out.println("client2's respond: "+result);
 		
 		return result;

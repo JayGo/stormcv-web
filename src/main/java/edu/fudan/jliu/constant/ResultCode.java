@@ -7,4 +7,6 @@ public class ResultCode {
 	public static final int CAPTURE_FAILED = -3;
 	public static final int START_EFFECT_STREAMING_FAILED = -4;
 	public static final int UNKNOWN_ERROR = -5;
+	
+	public static final int PIC_PRO_IS_EXSISTED = -6;
 }

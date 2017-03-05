@@ -91,6 +91,7 @@ public class RestfulCameraInfos {
 		String streamId = generateStreamId(cam);
 		cam.setStreamId(streamId);
 
+		cam.setCode(RequestCode.START_STORM);
 		respond = captureDispatcher.sendStartMessageToStorm(cam);
 		
 		// For test
@@ -151,6 +152,7 @@ public class RestfulCameraInfos {
 		effectMessage.setStreamId(effectStreamId);
 
 		// respond = captureDispatcher.dispatchStartMessage(effectMessage);
+		effectMessage.setCode(RequestCode.START_EFFECT_STORM);
 		respond = captureDispatcher.sendStartMessageToStorm(effectMessage);
 
 		if (respond.getCode() == ResultCode.RESULT_OK) {
