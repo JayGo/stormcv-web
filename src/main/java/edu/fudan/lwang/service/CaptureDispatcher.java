@@ -6,17 +6,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import edu.fudan.jliu.constant.RequestCode;
 import edu.fudan.jliu.constant.ResultCode;
 import edu.fudan.jliu.message.BaseMessage;
 import edu.fudan.jliu.message.EffectMessage;
 
 public class CaptureDispatcher {
+	
+	private final static Logger logger = Logger.getLogger("CaptureDispatcher.class");
 
 	private final int serverMsgPort = 8998;
 	private final int serverDataPort = 8999;
 
-	private final String stormMaster = "10.134.142.114";
+	private final String stormMaster = "10.134.142.141";
+//	private final String stormMaster = "10.134.142.114";
 	private final int stormcvCoreMsgPort = 8999;
 
 //	private static String[] serverIps = { "10.134.142.101", "10.134.142.104", "10.134.142.106", "10.134.142.107",
@@ -60,21 +65,28 @@ public class CaptureDispatcher {
 		switch (msg.getCode()) {
 		case RequestCode.START_STORM:
 			result = client2.sendMsg(msg);
-			System.out.println("send startStorm: " + msg);
+			logger.info("send startStorm: " + msg);
 			break;
 		
 		case RequestCode.START_EFFECT_STORM:
 			result = client2.sendMsg(emsg);
-			System.out.println("send startEffectStorm: " + emsg);
+			logger.info("send startEffectStorm: " + emsg);
+			logger.info("result of startEffectStorm: "+result);
+			break;
 			
 		case RequestCode.PIC_PROCESS:
 			result = client2.sendMsg(emsg);
-			System.out.println("send picture process: " + emsg);
+			logger.info("send picture process: " + emsg);
+			break;
 		default:
 			break;
 		}
-
-		System.out.println("client2's respond: "+result);
+		
+		if(result != null) {
+			logger.info("storm core's respond: " + result);
+		} else {
+			logger.error("result is null!");
+		}
 		
 		return result;
 	}
@@ -144,11 +156,13 @@ public class CaptureDispatcher {
 				if (!isEffectMessage) {
 					msg.setCode(RequestCode.START_BY_MASTER);
 					result = client1.sendMsg(msg);
-					System.out.println("send startByMaster: " + msg);
+					logger.info("send startByMaster: " + msg);
+					//System.out.println("send startByMaster: " + msg);
 				} else {
 					emsg.setCode(RequestCode.START_EFFECT_BY_MASTER);
 					result = client1.sendMsg(emsg);
-					System.out.println("send startEffectByMaster: " + emsg);
+					logger.info("send startEffectByMaster: " + emsg);
+//					System.out.println("send startEffectByMaster: " + emsg);
 				}
 				System.out.println("client1's respond: "+result);
 				// =================== End of CaptureService test =====================

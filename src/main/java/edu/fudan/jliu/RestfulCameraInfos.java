@@ -15,6 +15,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import edu.fudan.jliu.constant.RequestCode;
 import edu.fudan.jliu.constant.ResultCode;
 import edu.fudan.jliu.message.BaseMessage;
@@ -28,7 +31,12 @@ import edu.fudan.lwang.service.TCPClient;
 
 @Path("camera")
 public class RestfulCameraInfos {
+	
+	static { 
+		PropertyConfigurator.configure("/home/jliu/Documents/log4j.prop");
+	}
 
+	private static final Logger logger =Logger.getLogger(RestfulCameraInfos.class);
 	private static SqlManager sm = SqlManager.getInstance();
 	private static CameraPageGenerator cpg = CameraPageGenerator.getInstance();
 
@@ -77,10 +85,15 @@ public class RestfulCameraInfos {
 
 		BaseMessage respond = new BaseMessage(ResultCode.UNKNOWN_ERROR);
 		
-		System.out.println(cam);
+		// System.out.println(cam);
+		
+		logger.info("receive camera: "+cam);
 
 		String addr = cam.getAddr();
-
+		
+		if(sm == null) {
+			logger.info("sm is null!");
+		}
 		List<BaseMessage> cameraList = sm.getCameraList();
 
 		if (containsAddr(cameraList, addr)) {
@@ -104,9 +117,10 @@ public class RestfulCameraInfos {
 			sm.addCamera(respond);
 
 		}
-
-		print("add - " + respond.toString());
-		print("add respond - " + respond.toString());
+		
+		logger.info("add camera respond from storm core: "+respond);
+//		print("add - " + respond.toString());
+//		print("add respond - " + respond.toString());
 
 		return respond;
 	}

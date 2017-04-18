@@ -7,6 +7,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import org.apache.log4j.Logger;
+
 import edu.fudan.jliu.message.BaseMessage;
 
 /**
@@ -26,6 +28,7 @@ import edu.fudan.jliu.message.BaseMessage;
 public class TCPClient {
 
 	private Socket socket;
+	private static final Logger logger = Logger.getLogger(TCPClient.class);
 	
 	public TCPClient(String serverAddr, int port) {
 		try {
@@ -44,15 +47,22 @@ public class TCPClient {
 		ObjectOutputStream oos = null;
 		ObjectInputStream ios = null;
 		try {
+			if(socket == null) {
+				logger.info("socket is null");
+			}
 			
+			logger.info("start to write socket...");
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			
 			oos.writeObject(msg);
+			logger.info("finished write socket...");
 			
+			logger.info("start to read socket...");
 			ios = new ObjectInputStream(socket.getInputStream());
-			while (null == result) {
-				result=(BaseMessage) ios.readObject();
-			}
+//			while (null == result) {
+			result=(BaseMessage) ios.readObject();
+//			}
+			logger.info("finished read socket...");
 						
 //			oos.flush();
 //			oos.close();
