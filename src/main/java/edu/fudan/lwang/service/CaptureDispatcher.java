@@ -71,7 +71,7 @@ public class CaptureDispatcher {
 		case RequestCode.START_EFFECT_STORM:
 			result = client2.sendMsg(emsg);
 			logger.info("send startEffectStorm: " + emsg);
-			logger.info("result of startEffectStorm: "+result);
+			logger.info("respond of startEffectStorm: "+result);
 			break;
 			
 		case RequestCode.PIC_PROCESS:
