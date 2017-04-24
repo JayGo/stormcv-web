@@ -200,10 +200,10 @@ public class CameraDaoImpl implements CameraDao {
 	 * @return return the auto_incremented id after insert the effect request
 	 */
 	@Override
-	public int addEffectRtmp(EffectRtmpInfo info) {
+	public int addEffectRtmp(final EffectRtmpInfo info) {
 		int ret = -1;
 		try {
-			String sql = "INSERT INTO " + DBManager.EFFECT_RTMP_TABLE + " " + DBManager.EFFECT_RTMP_TABLE_COLS
+			final String sql = "INSERT INTO " + DBManager.EFFECT_RTMP_TABLE + " " + DBManager.EFFECT_RTMP_TABLE_COLS
 					+ " VALUES(?, ?, ?, ?, ?, ?)";
 
 			KeyHolder keyHolder = new GeneratedKeyHolder();
