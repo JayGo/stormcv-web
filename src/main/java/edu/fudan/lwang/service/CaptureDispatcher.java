@@ -6,7 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.fudan.jliu.constant.RequestCode;
 import edu.fudan.jliu.constant.ResultCode;
@@ -15,7 +17,7 @@ import edu.fudan.jliu.message.EffectMessage;
 
 public class CaptureDispatcher {
 	
-	private final static Logger logger = Logger.getLogger("CaptureDispatcher.class");
+	private final static Logger logger = LoggerFactory.getLogger("CaptureDispatcher.class");
 
 	private final int serverMsgPort = 8998;
 	private final int serverDataPort = 8999;
@@ -49,6 +51,65 @@ public class CaptureDispatcher {
 		for (int i = 0; i < rtmpServers.length; i++) {
 			rtmpServerMap.put(rtmpServers[i], 0);
 		}
+	}
+	
+	public String sendRequestToStorm(String request) {
+		//TCPClient client = new TCPClient(stormMaster, stormcvCoreMsgPort);
+		logger.info("[CaptureDispatcher] send request to storm {}", request);
+		//String result = null;
+		
+		JSONObject jRet = new JSONObject();
+		//result = client.sendRequest(request);
+		JSONObject jRequest = new JSONObject(request);
+		int code = jRequest.getInt("code");
+		String streamId;
+		switch (code) {
+		case RequestCode.START_RAW:
+			streamId = jRequest.getString("streamId");
+			jRet.put("code", RequestCode.RET_START_RAW);
+			jRet.put("streamId", streamId);
+			jRet.put("rtmpAddress", "rtmp://10.134.142.141:1935/live/"+streamId);
+			jRet.put("valid", true);
+			jRet.put("host", "10.134.142.141");
+			jRet.put("pid", 1000);
+			break;
+		case RequestCode.END_RAW :
+			streamId = jRequest.getString("streamId");
+			jRet.put("code", RequestCode.RET_END_RAW);
+			jRet.put("streamId", streamId);
+			jRet.put("status", ResultCode.RESULT_SUCCESS);
+			break;
+		case RequestCode.START_EFFECT :
+			streamId = jRequest.getString("streamId");
+			jRet.put("code", RequestCode.RET_START_EFFECT);
+			jRet.put("streamId", streamId);
+			jRet.put("effectType", "gray");
+			Map<String, String> params = new HashMap<String, String>();
+			params.put("para1", "test1");
+			params.put("para2", "test2");
+			jRet.put("effectParams", new JSONObject(params));
+			jRet.put("rtmpAddress", "rtmp://10.134.142.141:1935/live/"+streamId);
+			jRet.put("valid", true);
+			jRet.put("topoId", streamId);
+			break;
+		case RequestCode.END_EFFECT :
+			String topoId = jRequest.getString("topoId");
+			jRet.put("code", RequestCode.RET_END_EFFECT);
+			jRet.put("topoId", topoId);
+			jRet.put("status", ResultCode.RESULT_SUCCESS);
+			break;
+		default:
+			break;
+		}
+		return jRet.toString();
+	}
+	
+	public String sendRequestToStorm2(String request) {
+		TCPClient client = new TCPClient(stormMaster, stormcvCoreMsgPort);
+		logger.info("[CaptureDispatcher] send request to storm {}", request);
+		String result = client.sendRequest(request);
+		client.close();
+		return result;
 	}
 	
 	public BaseMessage sendStartMessageToStorm(BaseMessage msg) {
