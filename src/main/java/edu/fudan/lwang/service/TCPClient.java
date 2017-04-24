@@ -105,6 +105,8 @@ public class TCPClient {
 			result=(BaseMessage) ios.readObject();
 //			}
 			logger.info("finished read socket...");
+			
+			
 						
 //			oos.flush();
 //			oos.close();
