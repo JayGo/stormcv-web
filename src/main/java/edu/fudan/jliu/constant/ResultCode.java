@@ -9,4 +9,13 @@ public class ResultCode {
 	public static final int UNKNOWN_ERROR = -5;
 	
 	public static final int PIC_PRO_IS_EXSISTED = -6;
+	
+	public static final int RESULT_SUCCESS = 0;
+	public static final int RESULT_FAILED = 1;
+	public static final int RESULT_ERROR_DATABASE = 2;
+	public static final int RESULT_ERROR_UNSUPPORT_EFFECT = 3;
+	public static final int RESULT_ERROR_STREAMID = 4;
+	public static final int RESULT_ERROR_CAMERA_INVALID = 5;
+	public static final int RESULT_UNKNOWN_ERROR = 999;
+
 }

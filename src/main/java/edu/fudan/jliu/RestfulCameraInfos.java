@@ -15,8 +15,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.fudan.jliu.constant.RequestCode;
 import edu.fudan.jliu.constant.ResultCode;
@@ -32,11 +32,11 @@ import edu.fudan.lwang.service.TCPClient;
 @Path("camera")
 public class RestfulCameraInfos {
 	
-	static { 
-		PropertyConfigurator.configure("/home/jliu/Documents/log4j.prop");
-	}
+//	static { 
+//		PropertyConfigurator.configure("/home/jliu/Documents/log4j.prop");
+//	}
 
-	private static final Logger logger =Logger.getLogger(RestfulCameraInfos.class);
+	private static final Logger logger =LoggerFactory.getLogger(RestfulCameraInfos.class);
 	private static SqlManager sm = SqlManager.getInstance();
 	private static CameraPageGenerator cpg = CameraPageGenerator.getInstance();
 
