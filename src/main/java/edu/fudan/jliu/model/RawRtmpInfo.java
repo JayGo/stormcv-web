@@ -4,12 +4,12 @@ import org.json.JSONObject;
 
 public class RawRtmpInfo extends RtmpInfo {
 	private String host;
-	private int pid;
+	private long pid;
 	
 	public RawRtmpInfo() {
 	}
 
-	public RawRtmpInfo(String streamId, String rtmpAddress, boolean valid, String host, int pid) {
+	public RawRtmpInfo(String streamId, String rtmpAddress, boolean valid, String host, long pid) {
 		super(streamId, rtmpAddress, valid);
 		this.host = host;
 		this.pid = pid;
@@ -21,7 +21,7 @@ public class RawRtmpInfo extends RtmpInfo {
 		valid = jsonObject.getBoolean("valid");
 		rtmpAddress = jsonObject.getString("rtmpAddress");
 		host = jsonObject.getString("host");
-		pid = jsonObject.getInt("pid");
+		pid = jsonObject.getLong("pid");
 	}
 
 	public String getHost() {
@@ -32,11 +32,11 @@ public class RawRtmpInfo extends RtmpInfo {
 		this.host = host;
 	}
 
-	public int getPid() {
+	public long getPid() {
 		return pid;
 	}
 
-	public void setPid(int pid) {
+	public void setPid(long pid) {
 		this.pid = pid;
 	}
 

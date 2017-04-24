@@ -182,7 +182,7 @@ public class CameraDaoImpl implements CameraDao {
 			info.setRtmpAddress((String) userMap.get("rtmp_addr"));
 			info.setValid(((int) userMap.get("valid") == 0) ? true : false);
 			info.setHost((String) userMap.get("host"));
-			info.setPid((int) userMap.get("pid"));
+			info.setPid((long) userMap.get("pid"));
 			ret.add(info);
 			logger.info(info.toString());
 		}
@@ -350,7 +350,7 @@ public class CameraDaoImpl implements CameraDao {
 		ret.setRtmpAddress((String) rows.get("rtmp_addr"));
 		ret.setValid(((int) rows.get("valid") == 0) ? true : false);
 		ret.setHost((String) rows.get("host"));
-		ret.setPid((int) rows.get("pid"));
+		ret.setPid((long) rows.get("pid"));
 		logger.info("[{}]{}", "getCameraRawRtmpInfo", ret.toString());
 		return ret;
 	}
