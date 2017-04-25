@@ -10,22 +10,22 @@ public class Utils {
 	 * @param keyValue
 	 * @return
 	 */
-	public static String mapToString(Map<String, String> keyValue) {
-		if (keyValue.size() <= 0) return "";
-		StringBuilder builder = new StringBuilder();
-		for (String key : keyValue.keySet()) {
-			builder.append(key).append("=").append(keyValue.get(key)).append(",");
-		}
-		return builder.substring(0, builder.length() - 1);
-	}
+//	public static String mapToString(Map<String, Object> keyValue) {
+//		if (keyValue.size() <= 0) return "";
+//		StringBuilder builder = new StringBuilder();
+//		for (String key : keyValue.keySet()) {
+//			builder.append(key).append("=").append(keyValue.get(key)).append(",");
+//		}
+//		return builder.substring(0, builder.length() - 1);
+//	}
 	
 	/**
 	 * string to map
 	 * @param mapStr
 	 * @return
 	 */
-	public static Map<String, String>  stringToMap(String mapStr) {
-		Map<String, String> ret = new HashMap<String, String>();
+/*	public static Map<String, Object>  stringToMap(String mapStr) {
+		Map<String, Object> ret = new HashMap<String, Object>();
 		if (mapStr.length() > 0) {
 			String[] keyValueList = mapStr.split(",");
 			for (String keyValue : keyValueList) {
@@ -36,5 +36,5 @@ public class Utils {
 			}
 		}
 		return ret;
-	}
+	}*/
 }

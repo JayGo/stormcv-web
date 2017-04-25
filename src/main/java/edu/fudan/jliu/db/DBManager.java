@@ -38,7 +38,7 @@ public class DBManager {
 			+ "stream_id varchar(255) NOT NULL, "
 			+ "rtmp_addr varchar(255) NOT NULL, "
 			+ "host varchar(255) NOT NULL, "
-			+ "pid int NOT NULL, "
+			+ "pid bigint NOT NULL, "
 			+ "valid tinyint NOT NULL DEFAULT 0, "
 			+ "primary key(stream_id));";
 	public static final String RAW_RTMP_TABLE_COLS = "(stream_id, rtmp_addr, host, pid, valid)";

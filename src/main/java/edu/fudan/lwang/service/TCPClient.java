@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.Socket;
@@ -40,6 +41,9 @@ public class TCPClient {
 	public TCPClient(String serverAddr, int port) {
 		try {
 			socket = new Socket(serverAddr, port);
+			socket.setKeepAlive(true);
+			socket.setTcpNoDelay(true);
+			socket.setSoTimeout(20000);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -55,24 +59,35 @@ public class TCPClient {
 		String result = null;
 		try {
 			logger.info("start to write socket...");
-			Writer writer = new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
-			writer.write(msg);
-			writer.flush();
+//			Writer writer = new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
+//			writer.write(msg);
+//			writer.flush();
+			PrintWriter printWriter =new PrintWriter(socket.getOutputStream(),true);
+            printWriter.println(msg);
+            printWriter.flush();
+			//writer.close();
 			logger.info("finished write socket...");
 
 			logger.info("start to read socket...");
-			Reader reader = new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8);
-			char chars[] = new char[128];
-			int len;
-			StringBuilder sb = new StringBuilder();
-			while ((len = reader.read(chars)) != -1) {
-				sb.append(new String(chars, 0, len));
-			}
-			result = sb.toString();
+            BufferedReader bufferedReader = null;
+            try {
+                bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                result = bufferedReader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+//			Reader reader = new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8);
+//			char chars[] = new char[128];
+//			int len;
+//			StringBuilder sb = new StringBuilder();
+//			while ((len = reader.read(chars)) != -1) {
+//				sb.append(new String(chars, 0, len));
+//			}
+//			result = sb.toString();
 			logger.info("finished read socket, read:{}", result);
 			
-			writer.close();
-			reader.close();
+			printWriter.close();
+			bufferedReader.close();
 		} catch (EOFException e) {
 			if (socket.isClosed()) {
 				logger.error("Socket is closed now!!!");

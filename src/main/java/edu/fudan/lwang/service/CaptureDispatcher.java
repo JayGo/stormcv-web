@@ -22,8 +22,8 @@ public class CaptureDispatcher {
 	private final int serverMsgPort = 8998;
 	private final int serverDataPort = 8999;
 
-	private final String stormMaster = "10.134.142.141";
-//	private final String stormMaster = "10.134.142.114";
+//	private final String stormMaster = "10.134.142.141";
+	private final String stormMaster = "10.134.142.114";
 	private final int stormcvCoreMsgPort = 8999;
 
 //	private static String[] serverIps = { "10.134.142.101", "10.134.142.104", "10.134.142.106", "10.134.142.107",
@@ -53,7 +53,7 @@ public class CaptureDispatcher {
 		}
 	}
 	
-	public String sendRequestToStorm(String request) {
+	/*public String sendRequestToStorm(String request) {
 		//TCPClient client = new TCPClient(stormMaster, stormcvCoreMsgPort);
 		logger.info("[CaptureDispatcher] send request to storm {}", request);
 		//String result = null;
@@ -102,9 +102,9 @@ public class CaptureDispatcher {
 			break;
 		}
 		return jRet.toString();
-	}
+	}*/
 	
-	public String sendRequestToStorm2(String request) {
+	public String sendRequestToStorm(String request) {
 		TCPClient client = new TCPClient(stormMaster, stormcvCoreMsgPort);
 		logger.info("[CaptureDispatcher] send request to storm {}", request);
 		String result = client.sendRequest(request);
@@ -112,7 +112,7 @@ public class CaptureDispatcher {
 		return result;
 	}
 	
-	public BaseMessage sendStartMessageToStorm(BaseMessage msg) {
+	/*public BaseMessage sendStartMessageToStorm(BaseMessage msg) {
 		BaseMessage result = new BaseMessage(ResultCode.NO_SERVER_AVAILABLE);
 		EffectMessage emsg = null;
 
@@ -270,6 +270,6 @@ public class CaptureDispatcher {
 		}
 
 		return result;
-	}
+	}*/
 
 }

@@ -17,8 +17,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
-
 import edu.fudan.jliu.CameraPageGenerator;
 import edu.fudan.jliu.constant.EffectType;
 import edu.fudan.jliu.constant.RequestCode;
@@ -218,6 +216,8 @@ public class RestfulCameraInfos {
 			if (info.isValid()) {
 				cameraDao.addRawRtmp(info);
 				retJson.put("status", ResultCode.RESULT_SUCCESS);
+				retJson.put("host", info.getHost());
+				retJson.put("pid", info.getPid());
 				retJson.put("streamId", streamId);
 				retJson.put("rtmpAddress", info.getRtmpAddress());
 			} else {
@@ -279,6 +279,9 @@ public class RestfulCameraInfos {
 		
 		if (streamId != null && EffectType.isSupportedEffect(effectType)) {
 			String result = captureDispatcher.sendRequestToStorm(jRequest.toString());
+			
+			logger.info("storm start effect result:{}", result);
+			
 			EffectRtmpInfo info = new EffectRtmpInfo(result);
 			if (info.isValid()) {
 				int id = cameraDao.addEffectRtmp(info);
@@ -336,6 +339,7 @@ public class RestfulCameraInfos {
 //			RawRtmpInfo rawRtmpInfo = cameraDao.getCameraRawRtmpInfo(streamId);
 			EffectRtmpInfo effectRtmpInfo = cameraDao.getCameraEffectRtmpInfo(id);
 			if (effectRtmpInfo.isValid()) {
+				jRequest.put("streamId", effectRtmpInfo.getStreamId());
 				jRequest.put("topoId", effectRtmpInfo.getTopoId());
 				captureDispatcher.sendRequestToStorm(jRequest.toString());
 				cameraDao.deleteEffectRtmp(id);

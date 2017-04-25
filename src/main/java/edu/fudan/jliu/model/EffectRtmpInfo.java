@@ -5,16 +5,14 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
-import edu.fudan.jliu.util.Utils;
-
 public class EffectRtmpInfo extends RtmpInfo {
 	private int id = -1;
 	private String effectType;
-	private Map<String, String> effectParams;
+	private Map<String, Object> effectParams;
 	private String topoId;
 	
 	public EffectRtmpInfo() {
-		this.effectParams = new HashMap<String, String>();
+		this.effectParams = new HashMap<String, Object>();
 	}
 	
 	public EffectRtmpInfo(String streamId, String rtmpAddress, boolean valid, String effectType,
@@ -29,7 +27,7 @@ public class EffectRtmpInfo extends RtmpInfo {
 	}
 
 	public EffectRtmpInfo(int id, String streamId, String rtmpAddress, boolean valid, String effectType,
-			Map<String, String> effectParams, String topoId) {
+			Map<String, Object> effectParams, String topoId) {
 		super(streamId, rtmpAddress, valid);
 		this.id = id;
 		this.effectType = effectType;
@@ -51,7 +49,7 @@ public class EffectRtmpInfo extends RtmpInfo {
 		JSONObject params = jsonObject.getJSONObject("effectParams");
 		Map<String, Object> paramsMap = params.toMap();
 		for (String paraKey : paramsMap.keySet()) {
-			this.effectParams.put(paraKey, (String)paramsMap.get(paraKey));
+			this.effectParams.put(paraKey, paramsMap.get(paraKey));
 		}
 	}
 	
@@ -71,11 +69,11 @@ public class EffectRtmpInfo extends RtmpInfo {
 		this.effectType = effectType;
 	}
 
-	public Map<String, String> getEffectParams() {
+	public Map<String, Object> getEffectParams() {
 		return effectParams;
 	}
 
-	public void setEffectParams(Map<String, String> effectParams) {
+	public void setEffectParams(Map<String, Object> effectParams) {
 		if (effectParams != null) {
 			this.effectParams.putAll(effectParams);
 		}
@@ -93,7 +91,7 @@ public class EffectRtmpInfo extends RtmpInfo {
 	public String toString() {
 		return "EffectRtmpInfo [id=" + id + ", streamId=" + getStreamId() + ", rtmpAddress="
 				+ getRtmpAddress() + ", valid=" + isValid() + ", effectType=" + effectType + ", effectParams="
-				+ Utils.mapToString(effectParams) + ", topoId=" + topoId + "]";
+				+ (new JSONObject(effectParams).toString()) + ", topoId=" + topoId + "]";
 	}
 
 	
