@@ -210,12 +210,14 @@ public class RestfulCameraInfos {
 		String streamId = jRequest.getString("streamId");
 		if (streamId != null) {
 			jRequest.put("address", cameraDao.getCameraAddress(streamId));
-			String result = captureDispatcher.sendRequestToStorm(jRequest.toString());
+			String result = captureDispatcher.sendRequestToStorm2(jRequest.toString());
 			retJson.put("code", RequestCode.RET_START_RAW);
 			RawRtmpInfo info = new RawRtmpInfo(result);
 			if (info.isValid()) {
 				cameraDao.addRawRtmp(info);
 				retJson.put("status", ResultCode.RESULT_SUCCESS);
+				retJson.put("host", info.getHost());
+				retJson.put("pid", info.getPid());
 				retJson.put("streamId", streamId);
 				retJson.put("rtmpAddress", info.getRtmpAddress());
 			} else {
@@ -242,7 +244,7 @@ public class RestfulCameraInfos {
 			if (rawRtmpInfo.isValid()) {
 				jRequest.put("host", rawRtmpInfo.getHost());
 				jRequest.put("pid", rawRtmpInfo.getPid());
-				captureDispatcher.sendRequestToStorm(jRequest.toString());
+				captureDispatcher.sendRequestToStorm2(jRequest.toString());
 				cameraDao.deleteRawRtmp(streamId);
 				retJson.put("status", ResultCode.RESULT_SUCCESS);
 			} else {
@@ -276,7 +278,10 @@ public class RestfulCameraInfos {
 		String effectType = jRequest.getString("effectType");
 		
 		if (streamId != null && EffectType.isSupportedEffect(effectType)) {
-			String result = captureDispatcher.sendRequestToStorm(jRequest.toString());
+			String result = captureDispatcher.sendRequestToStorm2(jRequest.toString());
+			
+			logger.info("storm start effect result:{}", result);
+			
 			EffectRtmpInfo info = new EffectRtmpInfo(result);
 			if (info.isValid()) {
 				int id = cameraDao.addEffectRtmp(info);

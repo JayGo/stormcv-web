@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -18,7 +19,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import edu.fudan.jliu.model.CameraInfo;
 import edu.fudan.jliu.model.EffectRtmpInfo;
 import edu.fudan.jliu.model.RawRtmpInfo;
-import edu.fudan.jliu.util.Utils;
 
 public class CameraDaoImpl implements CameraDao {
 
@@ -216,7 +216,7 @@ public class CameraDaoImpl implements CameraDao {
 					int i = 1;
 					ps.setString(i++, info.getStreamId());
 					ps.setString(i++, info.getEffectType());
-					ps.setString(i++, (Utils.mapToString(info.getEffectParams())));
+					ps.setString(i++, (new JSONObject(info.getEffectParams()).toString()));
 					ps.setString(i++, info.getRtmpAddress());
 					ps.setString(i++, info.getTopoId());
 					ps.setInt(i++, (info.isValid() ? 0 : 1));
@@ -268,7 +268,7 @@ public class CameraDaoImpl implements CameraDao {
 			info.setTopoId((String) userMap.get("topo_id"));
 			info.setEffectType((String) userMap.get("effect_type"));
 			String paramStr = (String) userMap.get("effect_params");
-			info.setEffectParams(Utils.stringToMap(paramStr));
+			info.setEffectParams(new JSONObject(paramStr).toMap());
 			ret.add(info);
 			logger.info(info.toString());
 		}
@@ -330,7 +330,7 @@ public class CameraDaoImpl implements CameraDao {
 			info.setTopoId((String) userMap.get("topo_id"));
 			info.setEffectType((String) userMap.get("effect_type"));
 			String paramStr = (String) userMap.get("effect_params");
-			info.setEffectParams(Utils.stringToMap(paramStr));
+			info.setEffectParams(new JSONObject(paramStr).toMap());
 			ret.add(info);
 		}
 		return ret;
@@ -373,7 +373,7 @@ public class CameraDaoImpl implements CameraDao {
 		ret.setTopoId((String) rows.get("topo_id"));
 		ret.setEffectType((String) rows.get("effect_type"));
 		String paramStr = (String) rows.get("effect_params");
-		ret.setEffectParams(Utils.stringToMap(paramStr));
+		ret.setEffectParams(new JSONObject(paramStr).toMap());
 		logger.info("[{}]{}", "getCameraRawRtmpInfo", ret.toString());
 		return ret;
 	}
