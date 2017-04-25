@@ -95,6 +95,19 @@ public class CameraRestTest {
 		retJson = new JSONObject(retStr);
 		int effectId = retJson.getInt("id");
 		
+		//sleep 6s
+		try {
+			Thread.sleep(20000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
+		//stopEffect
+		request = new JSONObject();
+		request.put("code", RequestCode.END_EFFECT);
+		request.put("id", effectId);
+		retStr = restfulCameraInfos.stopEffect(request.toString());
+		logger.info("stop effect {} return: {}", effectId, retStr);
 	}
 }
