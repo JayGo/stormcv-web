@@ -90,12 +90,12 @@ public class CaptureDispatcher {
 			jRet.put("effectParams", new JSONObject(params));
 			jRet.put("rtmpAddress", "rtmp://10.134.142.141:1935/live/"+streamId);
 			jRet.put("valid", true);
-			jRet.put("topoId", streamId);
+			jRet.put("topoName", streamId);
 			break;
 		case RequestCode.END_EFFECT :
-			String topoId = jRequest.getString("topoId");
+			String topoName = jRequest.getString("topoName");
 			jRet.put("code", RequestCode.RET_END_EFFECT);
-			jRet.put("topoId", topoId);
+			jRet.put("topoName", topoName);
 			jRet.put("status", ResultCode.RESULT_SUCCESS);
 			break;
 		default:

@@ -218,7 +218,7 @@ public class CameraDaoImpl implements CameraDao {
 					ps.setString(i++, info.getEffectType());
 					ps.setString(i++, (new JSONObject(info.getEffectParams()).toString()));
 					ps.setString(i++, info.getRtmpAddress());
-					ps.setString(i++, info.getTopoId());
+					ps.setString(i++, info.getTopoName());
 					ps.setInt(i++, (info.isValid() ? 0 : 1));
 					return ps;
 				}
@@ -265,7 +265,7 @@ public class CameraDaoImpl implements CameraDao {
 			info.setStreamId((String) userMap.get("stream_id"));
 			info.setRtmpAddress((String) userMap.get("rtmp_addr"));
 			info.setValid(((int) userMap.get("valid") == 0) ? true : false);
-			info.setTopoId((String) userMap.get("topo_id"));
+			info.setTopoName((String) userMap.get("topo_name"));
 			info.setEffectType((String) userMap.get("effect_type"));
 			String paramStr = (String) userMap.get("effect_params");
 			info.setEffectParams(new JSONObject(paramStr).toMap());
@@ -327,7 +327,7 @@ public class CameraDaoImpl implements CameraDao {
 			info.setStreamId((String) userMap.get("stream_id"));
 			info.setRtmpAddress((String) userMap.get("rtmp_addr"));
 			info.setValid(((int) userMap.get("valid") == 0) ? true : false);
-			info.setTopoId((String) userMap.get("topo_id"));
+			info.setTopoName((String) userMap.get("topo_name"));
 			info.setEffectType((String) userMap.get("effect_type"));
 			String paramStr = (String) userMap.get("effect_params");
 			info.setEffectParams(new JSONObject(paramStr).toMap());
@@ -370,7 +370,7 @@ public class CameraDaoImpl implements CameraDao {
 		ret.setStreamId((String) rows.get("stream_id"));
 		ret.setRtmpAddress((String) rows.get("rtmp_addr"));
 		ret.setValid(((int) rows.get("valid") == 0) ? true : false);
-		ret.setTopoId((String) rows.get("topo_id"));
+		ret.setTopoName((String) rows.get("topo_name"));
 		ret.setEffectType((String) rows.get("effect_type"));
 		String paramStr = (String) rows.get("effect_params");
 		ret.setEffectParams(new JSONObject(paramStr).toMap());
