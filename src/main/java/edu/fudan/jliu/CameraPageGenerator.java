@@ -53,4 +53,10 @@ public class CameraPageGenerator {
 		}
 		
 	}
+	
+	public boolean deletePage(String streamId) {
+		String name = FileUtil.getProjectPath()+"/src/main/webapp/" + streamId + ".html";
+		File target = new File(name);
+		return target.delete();
+	}
 }

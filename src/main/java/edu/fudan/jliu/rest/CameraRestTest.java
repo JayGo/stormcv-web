@@ -35,7 +35,7 @@ public class CameraRestTest {
 		request.put("code", RequestCode.ADD_CAMERA);
 		request.put("streamId", streamId);
 		request.put("address", "rtsp://10.134.142.141:8554/bigbang480.mkv");
-		retStr = restfulCameraInfos.addCamera(request.toString());
+		retStr = restfulCameraInfos.addRaw(request.toString());
 		logger.info("add camera return: {}", retStr);
 		retJson = new JSONObject(retStr);
 		streamId = retJson.getString("streamId");
@@ -107,7 +107,7 @@ public class CameraRestTest {
 		request = new JSONObject();
 		request.put("code", RequestCode.END_EFFECT);
 		request.put("id", effectId);
-		retStr = restfulCameraInfos.stopEffect(request.toString());
+		retStr = restfulCameraInfos.deleteEffect(request.toString());
 		logger.info("stop effect {} return: {}", effectId, retStr);
 	}
 }
