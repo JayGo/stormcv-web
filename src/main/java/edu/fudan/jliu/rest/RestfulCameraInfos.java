@@ -59,7 +59,7 @@ public class RestfulCameraInfos {
 		request.put("code", RequestCode.ADD_CAMERA);
 		request.put("streamId", streamId);
 		request.put("address", "rtsp://10.134.142.114/bigbang1080.mkv");
-		retStr = restfulCameraInfos.addCamera(request.toString());
+		retStr = restfulCameraInfos.addRaw(request.toString());
 		logger.info("add camera return: {}", retStr);
 		retJson = new JSONObject(retStr);
 		streamId = retJson.getString("streamId");
@@ -111,14 +111,14 @@ public class RestfulCameraInfos {
 		request = new JSONObject();
 		request.put("code", RequestCode.END_EFFECT);
 		request.put("id", effectId);
-		retStr = restfulCameraInfos.stopEffect(request.toString());
+		retStr = restfulCameraInfos.deleteEffect(request.toString());
 		logger.info("stop effect {} return: {}", effectId, retStr);
 		
 		//deleteCamera
 		request = new JSONObject();
 		request.put("code", RequestCode.DELETE_CAMERA);
 		request.put("streamId", streamId);
-		retStr = restfulCameraInfos.deleteCamera(request.toString());
+		retStr = restfulCameraInfos.deleteRaw(request.toString());
 		logger.info("delete camera {} return: {}", streamId, retStr);
 		
 		//add camera
@@ -127,7 +127,7 @@ public class RestfulCameraInfos {
 		request.put("code", RequestCode.ADD_CAMERA);
 		request.put("streamId", streamId);
 		request.put("address", "rtsp://10.134.142.114/bigbang1080.mkv");
-		retStr = restfulCameraInfos.addCamera(request.toString());
+		retStr = restfulCameraInfos.addRaw(request.toString());
 		logger.info("add camera return: {}", retStr);
 		retJson = new JSONObject(retStr);
 		streamId = retJson.getString("streamId");
@@ -154,7 +154,7 @@ public class RestfulCameraInfos {
 		request = new JSONObject();
 		request.put("code", RequestCode.DELETE_CAMERA);
 		request.put("streamId", streamId);
-		retStr = restfulCameraInfos.deleteCamera(request.toString());
+		retStr = restfulCameraInfos.deleteRaw(request.toString());
 		logger.info("delete camera {} return: {}", streamId, retStr);
 	}
 
@@ -173,17 +173,17 @@ public class RestfulCameraInfos {
 	}
 
 	@POST
-	@Path("/add")
+	@Path("/addRaw")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public String addCamera(String request) {
+	public String addRaw(String request) {
 		JSONObject jsonObject = new JSONObject(request);
 		JSONObject retJson = new JSONObject();
 		retJson.put("code", RequestCode.RET_ADD_CAMERA);
 		if ((int)jsonObject.get("code") == RequestCode.ADD_CAMERA) {
-			String streamId = jsonObject.getString("streamId");
+			String name = jsonObject.getString("name");
 			String address = jsonObject.getString("address");
-			streamId = streamId + "_" + getStreamIdByAddr(address);
+			String streamId = name + "_" + getStreamIdByAddr(address);
 			boolean isAdded = cameraDao.addCamera(streamId, address);
 			if (isAdded) {
 				retJson.put("streamId", streamId);
@@ -195,6 +195,45 @@ public class RestfulCameraInfos {
 			logger.error("Illegal request {}!", request);
 		}
 		logger.info("return of addCamera: {}", retJson.toString());
+		return retJson.toString();
+	}
+	
+	@POST
+	@Path("/deleteRaw")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String deleteRaw(String request) {
+		logger.info("Receive deleteCamera request: {}", request);
+		JSONObject retJson = new JSONObject();
+		retJson.put("code", RequestCode.RET_START_EFFECT);
+		
+		JSONObject jRequest = new JSONObject(request);
+		String streamId = jRequest.getString("streamId");
+		if (streamId != null) {
+			String rawRtmpAddress = cameraDao.getCameraRawRtmpAddress(streamId);
+			if (rawRtmpAddress != null) {
+				JSONObject stopRawRequest = new JSONObject();
+				stopRawRequest.put("code", RequestCode.END_RAW);
+				stopRawRequest.put("streamId", streamId);
+				stopPlayRaw(stopRawRequest.toString());
+			}
+			
+			List<EffectRtmpInfo> allEffects = cameraDao.getCameraAllEffectRtmp(streamId);
+			logger.info("[deleteCamera]effect rtmp info for streamid {} : {}", streamId, allEffects);
+			for (EffectRtmpInfo info : allEffects) {
+				JSONObject stopEffectRequest = new JSONObject();
+				stopEffectRequest.put("code", RequestCode.END_EFFECT);
+				stopEffectRequest.put("id", info.getId());
+				deleteEffect(stopEffectRequest.toString());
+			}
+			
+			cameraDao.deleteCamera(streamId);
+			cpg.deletePage(streamId);
+			retJson.put("status", ResultCode.RESULT_SUCCESS);
+		} else {
+			retJson.put("status", ResultCode.RESULT_FAILED);
+		}
+		logger.info("[{}]result: {}", "deleteCamera", retJson.toString());
 		return retJson.toString();
 	}
 	
@@ -305,33 +344,14 @@ public class RestfulCameraInfos {
 		return ret.toString();
 	}
 	
-	@GET
-	@Path("/allEffects")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public String allEffects(@QueryParam("nowRawStreamId") String nowRawStreamId) {
-		List<EffectRtmpInfo> allEffectRtmp = cameraDao.getCameraAllEffectRtmp(nowRawStreamId);
-		JSONArray ret = new JSONArray(allEffectRtmp);
-		return ret.toString();
-	}
-	
-	@GET
-	@Path("/allRawRtmp")
-	@Produces(MediaType.APPLICATION_JSON)
-	public String allRawRtmp() {
-		List<RawRtmpInfo> allRawRtmp = cameraDao.getAllRawRtmp();
-		JSONArray ret = new JSONArray(allRawRtmp);
-		return ret.toString();
-	}
-	
 	@POST
-	@Path("/stopEffect")
+	@Path("/deleteEffect")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public String stopEffect(String request) {
+	public String deleteEffect(String request) {
 		logger.info("Receive stopEffect request: {}", request);
 		JSONObject retJson = new JSONObject();
-		retJson.put("code", RequestCode.RET_START_EFFECT);
+		retJson.put("code", RequestCode.RET_END_EFFECT);
 		
 		JSONObject jRequest = new JSONObject(request);
 		int id = jRequest.getInt("id");
@@ -353,43 +373,28 @@ public class RestfulCameraInfos {
 		return retJson.toString();
 	}
 	
-	@POST
-	@Path("/deleteCamera")
-	@Consumes(MediaType.APPLICATION_JSON)
+	@GET
+	@Path("/allEffects")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String deleteCamera(String request) {
-		logger.info("Receive deleteCamera request: {}", request);
-		JSONObject retJson = new JSONObject();
-		retJson.put("code", RequestCode.RET_START_EFFECT);
-		
-		JSONObject jRequest = new JSONObject(request);
-		String streamId = jRequest.getString("streamId");
-		if (streamId != null) {
-			String rawRtmpAddress = cameraDao.getCameraRawRtmpAddress(streamId);
-			if (rawRtmpAddress != null) {
-				JSONObject stopRawRequest = new JSONObject();
-				stopRawRequest.put("code", RequestCode.END_RAW);
-				stopRawRequest.put("streamId", streamId);
-				stopPlayRaw(stopRawRequest.toString());
-			}
-			
-			List<EffectRtmpInfo> allEffects = cameraDao.getCameraAllEffectRtmp(streamId);
-			logger.info("[deleteCamera]effect rtmp info for streamid {} : {}", streamId, allEffects);
-			for (EffectRtmpInfo info : allEffects) {
-				JSONObject stopEffectRequest = new JSONObject();
-				stopEffectRequest.put("code", RequestCode.END_EFFECT);
-				stopEffectRequest.put("id", info.getId());
-				stopEffect(stopEffectRequest.toString());
-			}
-			
-			cameraDao.deleteCamera(streamId);
-			retJson.put("status", ResultCode.RESULT_SUCCESS);
-		} else {
-			retJson.put("status", ResultCode.RESULT_FAILED);
-		}
-		logger.info("[{}]result: {}", "deleteCamera", retJson.toString());
-		return retJson.toString();
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String allEffects(@QueryParam("nowRawStreamId") String nowRawStreamId) {
+		List<EffectRtmpInfo> allEffectRtmp = cameraDao.getCameraAllEffectRtmp(nowRawStreamId);
+		JSONArray ret = new JSONArray(allEffectRtmp);
+		return ret.toString();
 	}
+	
+	@GET
+	@Path("/allRawRtmp")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String allRawRtmp() {
+		List<RawRtmpInfo> allRawRtmp = cameraDao.getAllRawRtmp();
+		JSONArray ret = new JSONArray(allRawRtmp);
+		return ret.toString();
+	}
+	
+
+	
+
 	
 	@POST
 	@Path("/helloWorld")
