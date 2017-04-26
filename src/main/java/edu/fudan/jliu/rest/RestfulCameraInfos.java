@@ -330,7 +330,7 @@ public class RestfulCameraInfos {
 					ret.put("streamId", streamId);
 					ret.put("effectType", effectType);
 					ret.put("rtmpAddress", info.getRtmpAddress());
-					ret.put("topoId", info.getTopoId());
+					ret.put("topoName", info.getTopoName());
 				} else {
 					ret.put("status", ResultCode.RESULT_FAILED);
 				}
@@ -360,7 +360,7 @@ public class RestfulCameraInfos {
 			EffectRtmpInfo effectRtmpInfo = cameraDao.getCameraEffectRtmpInfo(id);
 			if (effectRtmpInfo.isValid()) {
 				jRequest.put("streamId", effectRtmpInfo.getStreamId());
-				jRequest.put("topoId", effectRtmpInfo.getTopoId());
+				jRequest.put("topoName", effectRtmpInfo.getTopoName());
 				captureDispatcher.sendRequestToStorm(jRequest.toString());
 				cameraDao.deleteEffectRtmp(id);
 				retJson.put("status", ResultCode.RESULT_SUCCESS);

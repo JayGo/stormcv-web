@@ -50,10 +50,10 @@ public class DBManager {
 			+ "effect_type varchar(255) NOT NULL, "
 			+ "effect_params text, "
 			+ "rtmp_addr varchar(255) NOT NULL, "
-			+ "topo_id varchar(255) NOT NULL, "
+			+ "topo_name varchar(255) NOT NULL, "
 			+ "valid tinyint NOT NULL DEFAULT 0, "
 			+ "primary key(id));";
-	public static final String EFFECT_RTMP_TABLE_COLS = "(stream_id, effect_type, effect_params, rtmp_addr, topo_id, valid)";
+	public static final String EFFECT_RTMP_TABLE_COLS = "(stream_id, effect_type, effect_params, rtmp_addr, topo_name, valid)";
 
 	private Map<String, String> createTableMap = new HashMap<>();
 
