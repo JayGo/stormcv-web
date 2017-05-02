@@ -55,6 +55,20 @@ public class DBManager {
 			+ "primary key(id));";
 	public static final String EFFECT_RTMP_TABLE_COLS = "(stream_id, effect_type, effect_params, rtmp_addr, topo_name, valid)";
 
+	 public static final String TOPOLOGY_TABLE = "topology";
+    public static final String TOPOLOGY_TABLE_COLS = "(topo_name, topo_id, worker_num, owner, uptime_secs, task_num, " +
+            "executor_num, status)";
+
+
+    public static final String TOPOLOGY_COMPONENT_INFO_TABLE = "topology_component_info";
+    public static final String TOPOLOGY_COMPONENT_INFO_COLS = "(topo_name, component_id, type, executor_num, " +
+            "task_num, alltime_processed, alltime_failed, alltime_latency)";
+
+
+    public static final String TOPOLOGY_WORKER_INFO_TABLE = "topology_worker_info";
+    public static final String TOPOLOGY_WORKER_INFO_TABLE_COLS = "(topo_name, host, pid, port, cpu_usage, memory_usage)";
+
+
 	private Map<String, String> createTableMap = new HashMap<>();
 
 	public static void main(String[] args) {
@@ -157,7 +171,7 @@ public class DBManager {
 		return dataSource;
 	}
 
-	public JdbcTemplate geJdbcTemplate() {
+	public JdbcTemplate getJdbcTemplate() {
 		return this.jdbcTemplate;
 	}
 
