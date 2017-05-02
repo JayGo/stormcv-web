@@ -74,3 +74,8 @@ fabric.properties
 
 # for SVN
 .svn/
+
+#add by jliu
+.classpath
+.project
+.settings/

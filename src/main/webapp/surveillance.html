@@ -15,7 +15,7 @@
 		<script type="text/javascript" src="common/js/jquery-1.11.1.min.js"></script>
 		<script type="text/javascript" src="common/js/common-javascript.js"></script>
 		<script type="text/javascript" src="player/js/flowplayer-3.2.13.min.js"></script>
-		<script type="text/javascript" src="js/index.js"></script>
+		<script type="text/javascript" src="js/surveillance.js"></script>
 		<script type="text/javascript" src="js/common.js"></script>
 
 		<link rel="stylesheet" href="common/css/jquery-ui.min.css">
@@ -143,15 +143,150 @@
 				<div id="mainbody" class="mainbody">
 					<div class="info" id="add_video">
 
-						<div class="title">信息汇总</div>
+						<div class="title">视频监控</div>
 
 						<div class="titlebotborder">
 							<div class="border1"></div>
 							<div class="border2"></div>
 						</div>
+						<button id="add-effect" type="button">添加效果</button>
+					</div>
+					<div id="add-effect-dialog" title="添加处理效果">
+						<p class="effetc-tip">选择处理效果：</p>
+						<select id='check-effect'>
+							<option value='gray'>灰度化</option>
+							<option value='cannyEdge'>Canny边缘</option>
+							<option value='colorHistogram'>颜色直方图</option>
+							<option value='foregroundExtraction'>前景提取</option>
+							<option value='faceDetect'>人脸检测</option>
+						</select>
+						<p class="parameter-tip ">指定参数：</p>
+						<ul id="gray-parameter-list">
+							<li>
+								<label for="r">R: </label>
+								<input type="text" name="r" class="text ui-widget-content ui-corner-all ">
+							</li>
+							<li>
+								<label for="g">G: </label>
+								<input type="text" name="g" class="text ui-widget-content ui-corner-all ">
+							</li>
+							<li>
+								<label for="b">B: </label>
+								<input type="text" name="b" class="text ui-widget-content ui-corner-all ">
+							</li>
+						</ul>
+
+						<ul id="canny-parameter-list" class="hidden">
+							<li>
+								<label for="l_th">l_th: </label>
+								<input type="text" name="l_th" class="text ui-widget-content ui-corner-all ">
+							</li>
+							<li>
+								<label for="h_th">h_th: </label>
+								<input type="text" name="h_th" class="text ui-widget-content ui-corner-all ">
+							</li>
+						</ul>
+
+						<ul id="histogram-parameter-list" class="hidden">
+							<li>
+								<label for="r">R: </label>
+								<input type="text" name="r" class="text ui-widget-content ui-corner-all ">
+							</li>
+							<li>
+								<label for="g">G: </label>
+								<input type="text" name="g" class="text ui-widget-content ui-corner-all ">
+							</li>
+							<li>
+								<label for="b">B: </label>
+								<input type="text" name="b" class="text ui-widget-content ui-corner-all ">
+							</li>
+						</ul>
+
 					</div>
 					<div id="stream-list-content" class="items">
 						<ul id="stream-list-contentbox" class="play-list">
+
+							<li style="width: 316.6px;" id="box0">
+								<div class="boxarea">
+									<span class="imgbox"> 
+											<b></b> 
+											<i class="black"></i> 
+											<a href="#" style="display:block;width:316.6px;height:163px" id="player0"></a>				
+										</span>
+
+									<div class="mes">
+
+										<div class="mes-tit">
+											<h3 class="ellipsis">视频类型：</h3>
+											<span class="tag ellipsis" name="effect-type">源视频</span>
+										</div>
+
+										<div class="mes-tit">
+											<h3 class="ellipsis">视频名称：<h3>
+											<span class="tag ellipsis" name="name"></span>
+										</div>
+
+										<div class="mes-tit">
+											<h3 class="ellipsis">视频地址：<h3>
+											<span class="tag ellipsis" name="addr"></span>
+										</div>
+										
+										<div class="mes-tit">
+											<h3 class="ellipsis">播放器地址：<h3>
+											<span class="tag ellipsis" name="rtmp-addr"></span>
+										</div>
+										
+										<div class="mes-tit">
+											<h3 class="ellipsis">画面尺寸：<h3>
+											<span class="tag ellipsis" name="frame-size"></span>
+										</div>
+										
+										<div class="mes-tit">
+											<h3 class="ellipsis">播放帧率：<h3>
+											<span class="tag ellipsis" name="frame-rate"></span>
+										</div>
+										
+										<div class="mes-tit">
+											<button id="start_raw" type="button">开始播放</button>
+											<button id="stop_raw" type="button">停止播放</button>
+										</div>
+									</div>
+
+								</div>
+							</li>
+
+							<template id="stream-box-template">
+								<li style="width: 316.6px;">
+									<div class="boxarea">
+										<span class="imgbox"> 
+											<b></b> 
+											<i class="black"></i> 
+											<a href="#" style="display:block;width:316.6px;height:163px" id=""></a>				
+										</span>
+
+										<div class="mes">
+											<div class="mes-tit">
+												<h3 class="ellipsis"></h3>
+											<span class="tag ellipsis"></span>
+										</div>
+									</div>
+
+									<p>
+										<button class="fr" onclick="deleteEffect(this)">关闭效果</button>
+										<button class="fr" onclick="changeParas(this)">修改参数</button>
+										<button class="fr hidden" onclick="commitChangeParas(this)">提交修改</button>
+									</p>
+
+								</div>
+							</li>
+							</template>
+
+							<template id="parameters-list-template">
+								<p>
+									<label for=""></label>
+									<input type="text" name="" class="text ui-widget-content ui-corner-all" style="width: 30px;">
+								</p>
+							</template>
 
 						</ul>
 					</div>
