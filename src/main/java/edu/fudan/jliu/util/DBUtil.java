@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
+import edu.fudan.jliu.FileUtil;
+
 /**
  * @author jkyan
  * @version
@@ -17,7 +19,9 @@ public class DBUtil {
 	static File dbFile = null;
 	static {
 		try {
-			dbFile = new File("src/main/resources/config.properties");
+//			dbFile = new File("src/main/resources/config.properties");
+			dbFile = new File(FileUtil.getProjectPath()+"/src/main/resources/config.properties");
+
 			dbProps.load(new FileInputStream(dbFile.getAbsolutePath()));
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);

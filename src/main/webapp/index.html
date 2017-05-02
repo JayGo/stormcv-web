@@ -116,7 +116,7 @@
 							<p class="f-line"></p>
 
 							<ul class="left-footer-btn-ul">
-								<li id="add" class="left-footer-btn">
+								<li id="add-raw" class="left-footer-btn">
 									<a>添加</a>
 								</li>
 								<li class="left-footer-btn">
@@ -124,6 +124,14 @@
 								</li>
 							</ul>
 
+						</div>
+
+						<div id="add-raw-dialog" title="添加原生摄像头">
+							<p>指定摄像头名称：</p>
+							<input type="text" name="raw-name" class="text ui-widget-content ui-corner-all" value="bb480p">
+
+							<p>输入摄像头地址：</p>
+							<input type="text" name="raw-addr" class="text ui-widget-content ui-corner-all" value="rtsp://10.134.142.114/bigbang480.mkv">
 						</div>
 
 					</div>
@@ -141,13 +149,9 @@
 							<div class="border1"></div>
 							<div class="border2"></div>
 						</div>
-
-						<input id="close" type="button" value="Close" />
-						<button id="add_new" type="button">添加</button>
-						<button id="change_test" type="button">test</button>
-
+						<button id="add-effect" type="button">添加效果</button>
 					</div>
-					<div id="dialog-form" title="创建新用户">
+					<div id="add-effect-dialog" title="添加处理效果">
 						<p class="effetc-tip">选择处理效果：</p>
 						<select id='check-effect'>
 							<option value='gray'>灰度化</option>
@@ -211,9 +215,40 @@
 										</span>
 
 									<div class="mes">
+
 										<div class="mes-tit">
-											<h3 class="ellipsis">192.168.1.1</h3>
-											<span class="tag ellipsis">源视频</span>
+											<h3 class="ellipsis">视频类型：</h3>
+											<span class="tag ellipsis" name="effect-type">源视频</span>
+										</div>
+
+										<div class="mes-tit">
+											<h3 class="ellipsis">视频名称：<h3>
+											<span class="tag ellipsis" name="name"></span>
+										</div>
+
+										<div class="mes-tit">
+											<h3 class="ellipsis">视频地址：<h3>
+											<span class="tag ellipsis" name="addr"></span>
+										</div>
+										
+										<div class="mes-tit">
+											<h3 class="ellipsis">播放器地址：<h3>
+											<span class="tag ellipsis" name="rtmp-addr"></span>
+										</div>
+										
+										<div class="mes-tit">
+											<h3 class="ellipsis">画面尺寸：<h3>
+											<span class="tag ellipsis" name="frame-size"></span>
+										</div>
+										
+										<div class="mes-tit">
+											<h3 class="ellipsis">播放帧率：<h3>
+											<span class="tag ellipsis" name="frame-rate"></span>
+										</div>
+										
+										<div class="mes-tit">
+											<button id="start_raw" type="button">开始播放</button>
+											<button id="stop_raw" type="button">停止播放</button>
 										</div>
 									</div>
 
@@ -232,21 +267,25 @@
 										<div class="mes">
 											<div class="mes-tit">
 												<h3 class="ellipsis"></h3>
-												<span class="tag ellipsis"></span>
-											</div>
-
-											<p>
-												<button class="fr" onclick="changeParas(this)">修改参数</button>
-												<button class="fr hidden" onclick="commitChangeParas(this)">提交修改</button>
-											</p>
+											<span class="tag ellipsis"></span>
 										</div>
-
 									</div>
-								</li>
+
+									<p>
+										<button class="fr" onclick="deleteEffect(this)">关闭效果</button>
+										<button class="fr" onclick="changeParas(this)">修改参数</button>
+										<button class="fr hidden" onclick="commitChangeParas(this)">提交修改</button>
+									</p>
+
+								</div>
+							</li>
 							</template>
+
 							<template id="parameters-list-template">
-								<label for=""></label>
-								<input type="text" name="" class="text ui-widget-content ui-corner-all" style="width: 30px;">
+								<p>
+									<label for=""></label>
+									<input type="text" name="" class="text ui-widget-content ui-corner-all" style="width: 30px;">
+								</p>
 							</template>
 
 						</ul>

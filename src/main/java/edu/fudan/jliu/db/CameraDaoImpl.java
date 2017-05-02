@@ -12,6 +12,8 @@ import java.util.Map;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -343,15 +345,26 @@ public class CameraDaoImpl implements CameraDao {
 	 */
 	@Override
 	public RawRtmpInfo getCameraRawRtmpInfo(String streamId) {
-		RawRtmpInfo ret = new RawRtmpInfo();
-		Map<String, Object> rows = dbManager.geJdbcTemplate().queryForMap(
-				"SELECT * FROM " + DBManager.RAW_RTMP_TABLE + " WHERE stream_id = ?", new Object[] { streamId });
-		ret.setStreamId((String) rows.get("stream_id"));
-		ret.setRtmpAddress((String) rows.get("rtmp_addr"));
-		ret.setValid(((int) rows.get("valid") == 0) ? true : false);
-		ret.setHost((String) rows.get("host"));
-		ret.setPid((long) rows.get("pid"));
-		logger.info("[{}]{}", "getCameraRawRtmpInfo", ret.toString());
+		RawRtmpInfo ret = null;
+
+		Map<String, Object> rows = null;
+		try {
+			rows = dbManager.geJdbcTemplate().queryForMap(
+					"SELECT * FROM " + DBManager.RAW_RTMP_TABLE + " WHERE stream_id = ?", new Object[] { streamId });
+			ret = new RawRtmpInfo();
+			ret.setStreamId((String) rows.get("stream_id"));
+			ret.setRtmpAddress((String) rows.get("rtmp_addr"));
+			ret.setValid(((int) rows.get("valid") == 0) ? true : false);
+			ret.setHost((String) rows.get("host"));
+			ret.setPid((long) rows.get("pid"));
+			logger.info("[{}]{}", "getCameraRawRtmpInfo", ret.toString());
+		} catch (IncorrectResultSizeDataAccessException e) {
+			// TODO: handle exception
+			logger.info("{} not push to rtmp yet!", streamId);
+		} catch (DataAccessException e) {
+			logger.info("{} no permission!", streamId);
+		}
+
 		return ret;
 	}
 
@@ -388,9 +401,10 @@ public class CameraDaoImpl implements CameraDao {
 		CameraInfo ret = new CameraInfo();
 
 		Map<String, Object> queryRet = dbManager.geJdbcTemplate().queryForMap(
-				"SELECT * FROM " + DBManager.CAMERA_INFO_TABLE + " WHERE stram_id = ?", new Object[] { streamId });
+				"SELECT * FROM " + DBManager.CAMERA_INFO_TABLE + " WHERE stream_id = ?", new Object[] { streamId });
 
 		ret.setStreamId((String) queryRet.get("stream_id"));
+		ret.setName(ret.getName());
 		ret.setAddress((String) queryRet.get("address"));
 		ret.setValid(((int) queryRet.get("valid") == 0) ? true : false);
 		ret.setWidth((int) queryRet.get("width"));
