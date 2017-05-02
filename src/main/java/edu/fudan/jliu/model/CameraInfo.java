@@ -9,8 +9,22 @@ public class CameraInfo {
 	private int width;
 	private int height;
 	private float frameRate;
+	private String name;
 	
+	public String getName() {
+		return (name == null)?extractName(streamId):name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public CameraInfo() {
+	}
+	
+	private String extractName(String streamId) {
+		int lastIndex = streamId.lastIndexOf('_');
+		return streamId.substring(0, lastIndex);
 	}
 	
 	public CameraInfo(String streamId, String address,boolean valid) {
@@ -82,6 +96,7 @@ public class CameraInfo {
 		jsonObject.put("width", this.width);
 		jsonObject.put("height", this.height);
 		jsonObject.put("frameRate", this.frameRate);
+		jsonObject.put("name", this.getName());
 		return jsonObject.toString();
 	}
 }

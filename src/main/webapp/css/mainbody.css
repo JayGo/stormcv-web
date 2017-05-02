@@ -84,13 +84,12 @@
 .mainbody .play-list li .imgbox>img {
 	width: 100%;
 }
-
 .mainbody .play-list li .mes {
 	background: #fff;
 	padding: 5px 5px 3px;
 	line-height: 20px;
 	font-size: 12px;
-	height: 48px;
+/*	height: 80px;*/
 	*position: relative;
 	overflow: hidden;
 }

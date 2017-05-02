@@ -1,5 +1,6 @@
 package edu.fudan.jliu.rest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -186,6 +187,7 @@ public class RestfulCameraInfos {
 			String streamId = name + "_" + getStreamIdByAddr(address);
 			boolean isAdded = cameraDao.addCamera(streamId, address);
 			if (isAdded) {
+				cpg.createPage(streamId);
 				retJson.put("streamId", streamId);
 				retJson.put("status", ResultCode.RESULT_SUCCESS);
 			} else {
@@ -205,7 +207,7 @@ public class RestfulCameraInfos {
 	public String deleteRaw(String request) {
 		logger.info("Receive deleteCamera request: {}", request);
 		JSONObject retJson = new JSONObject();
-		retJson.put("code", RequestCode.RET_START_EFFECT);
+		retJson.put("code", RequestCode.RET_DELETE_CAMERA);
 		
 		JSONObject jRequest = new JSONObject(request);
 		String streamId = jRequest.getString("streamId");
@@ -248,12 +250,21 @@ public class RestfulCameraInfos {
 		JSONObject jRequest = new JSONObject(request);
 		String streamId = jRequest.getString("streamId");
 		if (streamId != null) {
-			jRequest.put("address", cameraDao.getCameraAddress(streamId));
-			String result = captureDispatcher.sendRequestToStorm(jRequest.toString());
-			retJson.put("code", RequestCode.RET_START_RAW);
-			RawRtmpInfo info = new RawRtmpInfo(result);
-			if (info.isValid()) {
+			boolean needToSendRequest = true;
+			RawRtmpInfo info = null;
+			if(cameraDao.getCameraRawRtmpAddress(streamId) != null) {
+				info = cameraDao.getCameraRawRtmpInfo(streamId);
+				needToSendRequest = false;
+			}
+			
+			if(needToSendRequest) {
+				String result = captureDispatcher.sendRequestToStorm(jRequest.toString());
+				retJson.put("code", RequestCode.RET_START_RAW);
+				info = new RawRtmpInfo(result);
 				cameraDao.addRawRtmp(info);
+			}
+			
+			if(info.isValid()) {
 				retJson.put("status", ResultCode.RESULT_SUCCESS);
 				retJson.put("host", info.getHost());
 				retJson.put("pid", info.getPid());
@@ -262,7 +273,6 @@ public class RestfulCameraInfos {
 			} else {
 				retJson.put("status", ResultCode.RESULT_FAILED);
 			}
-			logger.info("result of startPlayRaw: {}", retJson.toString());
 		}
 		return retJson.toString();
 	}
@@ -299,8 +309,26 @@ public class RestfulCameraInfos {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public String rawRtmp(@QueryParam("nowRawStreamId") String nowRawStreamId) {
-		RawRtmpInfo info = cameraDao.getCameraRawRtmpInfo(nowRawStreamId);
-		JSONObject jsonObject = new JSONObject(info);
+		RawRtmpInfo rawRtmpInfo = cameraDao.getCameraRawRtmpInfo(nowRawStreamId);
+		CameraInfo cameraInfo = cameraDao.getCameraInfo(nowRawStreamId);
+
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("status", ResultCode.RESULT_SUCCESS);
+		
+		jsonObject.put("name", cameraInfo.getName());
+		jsonObject.put("streamId", cameraInfo.getStreamId());
+		jsonObject.put("address", cameraInfo.getAddress());
+		jsonObject.put("width", cameraInfo.getWidth());
+		jsonObject.put("height", cameraInfo.getHeight());
+		jsonObject.put("frameRate", cameraInfo.getFrameRate());
+		
+		if(rawRtmpInfo != null) {
+			jsonObject.put("rtmpAddress", rawRtmpInfo.getRtmpAddress());
+			jsonObject.put("pid", rawRtmpInfo.getPid());
+			jsonObject.put("host", rawRtmpInfo.getHost());
+		}
+
+		
 		return jsonObject.toString();
 	}
 	
@@ -313,6 +341,9 @@ public class RestfulCameraInfos {
 		ret.put("code", RequestCode.RET_START_EFFECT);
 		
 		JSONObject jRequest = new JSONObject(request);
+		
+		System.out.println("=============== effect request: "+request);
+		
 		String streamId = jRequest.getString("streamId");
 		String effectType = jRequest.getString("effectType");
 		

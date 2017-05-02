@@ -1,25 +1,25 @@
-var addr = "";
+var effectStreamCount = 1;
+var nowRawStreamId = "";
+var cameraCount = 0;
 
-function GetRequest() {
-	var url = location.search; // »ñÈ¡urlÖÐ"?"·ûºóµÄ×Ö´®
-	// alert(url);
-	var theRequest = new Object();
-	if(url.indexOf("?") != -1) {
-		var str = url.substr(1);
-		strs = str.split("&");
-		for(var i = 0; i < strs.length; i++) {
-			theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
-		}
-	}
-	return theRequest;
-}
+// Request code
+var ADD_CAMERA = 100;
+var DELETE_CAMERA = 101;
+var START_RAW = 102;
+var END_RAW = 104
+var START_EFFECT = 3;
+var END_EFFRCT = 10;
+
+// Result status
+var RESULT_SUCCESS = 0;
+var RESULT_FAILED = 1;
 
 function sleep(d) {
 	for(var t = Date.now(); Date.now() - t <= d;);
 }
 
 function play(playerId, clipUrl, rtmpUrl) {
-	alert("flow player: "+ rtmpUrl+"&"+clipUrl);
+	//	alert("flow player: " + rtmpUrl + "&" + clipUrl);
 	flowplayer(playerId, "player/swf/flowplayer-3.2.18.swf", {
 		clip: {
 			url: clipUrl,
@@ -60,7 +60,6 @@ function submit(effect) {
 }
 
 function checkEffect(effectValue) {
-	// alert();
 	switch(effectValue) {
 		case 'gray':
 
@@ -78,7 +77,7 @@ function checkEffect(effectValue) {
 			break;
 
 		case 'cannyEdge':
-		
+
 			if(!$("#gray-parameter-list").hasClass("hidden")) {
 				$("#gray-parameter-list").addClass("hidden");
 			}
@@ -91,9 +90,9 @@ function checkEffect(effectValue) {
 				$("#histogram-parameter-list").addClass("hidden");
 			}
 			break;
-			
+
 		case 'colorHistogram':
-		
+
 			if(!$("#gray-parameter-list").hasClass("hidden")) {
 				$("#gray-parameter-list").addClass("hidden");
 			}
@@ -106,41 +105,43 @@ function checkEffect(effectValue) {
 				$("#histogram-parameter-list").removeClass();
 			}
 			break;
-			
+
 		case 'foreground_extraction':
-			// alert("foregroundExtraction");
 			break;
 		default:
-			alert("no effect selected!");
+			alert("effect not supported!");
 	}
 }
 
-function addCameraToBox(rtmpAddr, effectStreamId, effectType, parameters, id) {
-	// alert("addCameraToBox is invoked!");
+function addCameraToBox(rtmpAddr, topoId, effectType, parameters, id) {
 	var previewImgAddr = "";
 
 	var box = document.querySelector("#stream-box-template");
 
 	box.content.querySelector("li").id = "box" + id;
-	box.content.querySelector(".ellipsis").innerHTML = rtmpAddr + "/" + effectStreamId;
-	box.content.querySelector(".tag.ellipsis").innerHTML = "处理效果: " + effectType;
+	box.content.querySelector(".ellipsis").innerHTML = rtmpAddr;
+	box.content.querySelector(".tag.ellipsis").innerHTML = effectType;
 	box.content.querySelector("a").id = "player" + id;
 
 	$("#stream-list-contentbox").append(box.content.cloneNode(true));
-
-	var paraSection = $("#box" + id + " .boxarea .mes p");
+	
+	
+	var paraSection = document.querySelector("#box" + id + " .boxarea .mes");
+	
 	var paraItem = document.querySelector("#parameters-list-template");
-
+	
 	for(var i in parameters) {
-		// alert("shuchu:" + i + ":" + parameters[i]);
 		paraItem.content.querySelector("label").for = i + "";
 		paraItem.content.querySelector("label").innerHTML = i;
 		paraItem.content.querySelector("input").name = i;
 		paraItem.content.querySelector("input").value = parameters[i];
 		paraItem.content.querySelector("input").setAttribute("disabled", "true");
-		paraSection.append(paraItem.content.cloneNode(true));
+		paraSection.appendChild(paraItem.content.cloneNode(true));
 	}
-	play("player" + id, effectStreamId, rtmpAddr);
+	
+	var rtmpUrl = extractRtmpUrl(rtmpAddr, topoId);
+	
+	play("player" + id, topoId, rtmpUrl);
 }
 
 function initialPlayer(rtmpAddr, streamId) {
@@ -167,25 +168,17 @@ function initialPlayer(rtmpAddr, streamId) {
 	a.style.width = "320px";
 	a.style.height = "240px";
 
-	// divBox.appendChild(span);
-	// divBox.appendChild(a);
-	// divBox.appendChild(span);
-
 	li.appendChild(divMargin);
 	li.appendChild(divBox);
 
 	$(".videosection .video-list").append(li);
 
 	var playerId = "player" + streamId;
-
-	// play(playerId, rtmpAddr);
 }
 
 function commitChangeParas(obj) {
-	// alert(obj.nodeName);
 	var p = obj.parentNode;
 	var childs = p.children;
-	// alert(childs.length);
 	$(obj).prev().removeClass("hidden");
 	for(var i = 0; i < childs.length; i++) {
 		if(childs[i].nodeName == "INPUT") {
@@ -197,10 +190,8 @@ function commitChangeParas(obj) {
 }
 
 function changeParas(obj) {
-	// alert(obj.nodeName);
 	var p = obj.parentNode;
 	var childs = p.children;
-	// alert(childs.length);
 	$(obj).next().removeClass("hidden");
 	for(var i = 0; i < childs.length; i++) {
 		if(childs[i].nodeName == "INPUT") {
@@ -210,9 +201,43 @@ function changeParas(obj) {
 	$(obj).addClass("hidden");
 }
 
-function addCameraToList(streamId, id) {
+function deleteEffect(obj) {
+	var p = obj.parentNode;
+	var span = p.parentNode.getElementsByClassName("mes")[0].getElementsByClassName("mes-tit")[0].getElementsByTagName("SPAN")[0];
+	var effectType = span.innerHTML;
+	var boxId = p.parentNode.parentNode.getAttribute("id");
+	var id = boxId.substring(3); // "box876  -> 876"  
+	$.ajax({
+		type: "POST",
+		url: "./api/v1/camera/deleteEffect",
+		dataType: "json",
+		contentType: "application/json",
+		data: JSON.stringify({
+			"code": END_EFFRCT,
+			"id": id
+		}),
+		async: false,
+		success: function(data, textStatus, jqXHR) {
+			if(data.status == RESULT_SUCCESS) {
+				alert("删除处理效果成功！effect infos: " + JSON.stringify(data));
+				var div = p.parentNode;
+				var li = div.parentNode;
+				li.remove();
+			} else if(data.status == RESULT_FAILED) {
+				alert("添加失败! effect infos: " + JSON.stringify(data));
+			} else {
+				alert("未知错误: " + data.status);
+			}
+		},
+		error: function(data, textStatus, jqXHR) {
+			alert("error:" + textStatus);
+		}
+	});
+}
+
+function addCameraToList(streamId, name, id) {
 	var item = document.querySelector("#camli-template");
-	var name = "摄像头" + id;
+	var name = "摄像头 - " + name;
 	item.content.querySelector(".camlist-li").id = id;
 	item.content.querySelector("span").innerHTML = name;
 	item.content.querySelector(".camlist-li").setAttribute("selected", "false");
@@ -233,13 +258,13 @@ function initCameraList() {
 			if(data.length == 0) {
 				alert("Camera list is empty!");
 			} else {
-
 				for(var i = 0; i < data.length; i++) {
 					var id = cameraCount;
 					var streamId = data[i].streamId;
+					var name = data[i].name;
 
 					// 填充左侧列表
-					addCameraToList(streamId, id);
+					addCameraToList(streamId, name, id);
 				}
 			}
 		},
@@ -257,13 +282,11 @@ function clearCameraBox() {
 	for(var i = 1; i < boxListLength; i++) {
 		$("#box" + i).remove();
 		effectStreamCount--;
-		// alert("effectStreamCount: "+effectStreamCount);
 	}
 
 }
 
 function updateEffectCameraBox() {
-	// clearCameraBox();
 	$.ajax({
 		async: false,
 		type: "GET",
@@ -273,22 +296,14 @@ function updateEffectCameraBox() {
 		success: function(data, textStatus, jqXHR) {
 			if(data != undefined) {
 				for(var i = 0; i < data.length; i++) {
-					var effectStreamId = data[i].streamId;
-					var rtmpAddr = data[i].rtmpAddr;
+					alert("effect infos: "+JSON.stringify(data[i]));
+					var topoId = data[i].topoId;
+					var rtmpAddr = data[i].rtmpAddress;
 					var effectType = data[i].effectType;
-					var parameters = data[i].parameters;
-					// alert(camId + "\\" + playerId + "\\" + rtmpUrl + "\\" + effectType + "\\" + parameters);
-					var paraDic = data[i].parameters;
-					// For jersey-moxy
-					//					alert(JSON.stringify(parameters));
-					//					for (var j = 0; j < parameters.entry.length; j++) {
-					//						// alert(parameters.entry[j].key + " : " + parameters.entry[j].value);
-					//						paraDic[parameters.entry[j].key] = parameters.entry[j].value;
-					//					}
-					addCameraToBox(rtmpAddr, effectStreamId, effectType, paraDic, effectStreamCount);
+					var effectParams = data[i].effectParams;
+					var id = data[i].id;
+					addCameraToBox(rtmpAddr, topoId, effectType, effectParams, id);
 					effectStreamCount++;
-					// alert("effectStreamCount: "+effectStreamCount);
-					// sleep(1800);
 				}
 			} else {
 				alert("Error:" + data.code);
@@ -311,18 +326,15 @@ function updateRawCameraBox() {
 		dataType: "json",
 		contentType: "application/json",
 		success: function(data, textStatus, jqXHR) {
-
-			if(data.code == 0) {
-				rtmpAddr = data.rtmpAddr;
-				alert("return from server rtmpAddr: "+rtmpAddr);
-				streamId = data.streamId;
-				alert("rtmpAddr: " + rtmpAddr);
-				alert("streamId: " + streamId);
-				completeRtmpUrl = rtmpAddr + "" + streamId;
-				// alert("rawRtmp is: "+rtmpAddr);
-				$("#box0 h3").html(completeRtmpUrl);
+			if(data.status == RESULT_SUCCESS) {
+				alert("update raw infos:" + JSON.stringify(data));
+				fillCameraInfoToBox(data.name, data.address, data.width, data.height, data.frameRate);
+				// 如果正在播放则显示rtmp地址等信息，并让网页播放器插件进行播放。
+				if(data.rtmpAddress != undefined) {
+					fillRawRtmpInfoToBox(data.streamId, data.rtmpAddress)
+				}
 			} else {
-				alert("Error code:" + data.code);
+				alert("Error code:" + data.status);
 			}
 		},
 		error: function(data, textStatus, jqXHR) {
@@ -330,7 +342,6 @@ function updateRawCameraBox() {
 			alert("error:" + textStatus);
 		}
 	});
-	play("player0", nowRawStreamId, rtmpAddr);
 }
 
 function getNowPageRawStreamId() {
@@ -347,92 +358,104 @@ function getNowPageRawStreamId() {
 	return strs2[0];
 }
 
-var effectStreamCount = 1;
-var nowRawStreamId = "";
-var cameraCount = 0;
+function extractRtmpUrl(rtmpAddr, streamId) {
+	var urlLength = rtmpAddr.length - streamId.length - 1;
+	return rtmpAddr.substr(0, urlLength);
+}
+
+function fillRawBox(id, name, addr, rtmpAddr, width, height, frameRate) {
+	document.querySelector("#box0 span[name='name']").innerHTML = name;
+	//	alert("box's name: "+ nameSpan.nodeName);
+
+	document.querySelector("#box0 span[name='addr']").innerHTML = addr;
+	document.querySelector("#box0 span[name='rtmp-addr']").innerHTML = rtmpAddr;
+	document.querySelector("#box0 span[name='frame-size']").innerHTML = width + "x" + height;
+	document.querySelector("#box0 span[name='frame-rate']").innerHTML = frameRate;
+
+}
+
+function fillRawRtmpInfoToBox(streamId, rtmpAddr) {
+	document.querySelector("#box0 span[name='rtmp-addr']").innerHTML = rtmpAddr;
+	var rtmpUrl = extractRtmpUrl(rtmpAddr, streamId);
+	play("player0", streamId, rtmpUrl);
+}
+
+function clearRawRtmpInfoInBox() {
+	document.querySelector("#box0 span[name='rtmp-addr']").innerHTML = "";
+}
+
+function fillCameraInfoToBox(name, addr, width, height, frameRate) {
+	document.querySelector("#box0 span[name='name']").innerHTML = name;
+	document.querySelector("#box0 span[name='addr']").innerHTML = addr;
+	document.querySelector("#box0 span[name='frame-size']").innerHTML = width + "x" + height;
+	document.querySelector("#box0 span[name='frame-rate']").innerHTML = frameRate;
+}
 
 jQuery(document).ready(function($) {
 
-	//addr = $(".camlist-li").css("selected","true").attr("id");
-
-	var Request = GetRequest();
-	addr = Request['addr'];
-
-	// alert(getNowPageCamId());
-	var resId = getNowPageRawStreamId();
-	if(resId != "")
-		nowRawStreamId = resId;
-	alert("now xxxx: " + resId);
-
 	initCameraList();
-	updateRawCameraBox();
-	updateEffectCameraBox();
-
-	// addCameraToList('rtmp://live.hkstv.hk.lxdns.com/live',"摄像头"+0);
-
-	// addCameraToBox('rtmp://live.hkstv.hk.lxdns.com/live', null, null, effectStreamCount);
-	// effectStreamCount++;
-
-	//	if(addr) {
-	//		$.ajax({
-	//			type: "GET",
-	//			url: "./api/v1/camera/play?addr="+addr,
-	//			dataType: "json",
-	//			contentType: "application/json",
-	//			async: false,
-	//			success: function(data, textStatus, jqXHR) {
-	//				if (data.result == true) {
-	//					var addrs = data.message;
-	//					var splitAddrs = addrs.split(",");
-	//					for(var i = 0; i < splitAddrs.length; i++) {
-	//						var rtmpAddr = splitAddrs[i];
-	//						var rtmpAddrs = rtmpAddr.split("/");
-	//						var streamId = rtmpAddrs[rtmpAddrs.length - 1];
-	//						initialPlayer(rtmpAddr, streamId);
-	//					}	
-	//				}
-	//				else {
-	//					alert("Error:" + data.message);
-	//				}
-	//			},
-	//			error: function(data, textStatus, jqXHR) {
-	//				alert("error:" + textStatus);
-	//			}
-	//		});
-	//	}
-	//	
-	//	$.ajax({
-	//		type : "GET",
-	//		url : "./api/v1/camera/allCameraLists",
-	//		dataType : "json",
-	//		contentType : "application/json",
-	//		async : true,
-	//		success : function(data, textStatus, jqXHR) {
-	//			var cameraInfosJSONStr = JSON.stringify(data);
-	//
-	//			if (data == "") {
-	//				alert("Camera list is empty!");
-	//			} else {
-	//
-	//				for (var i = 0; i < data.length; i++) {
-	//					var name = "摄像头" + i;
-	//					var addr = data[i].addr;
-	//
-	//					// 填充左侧列表
-	//					addCameraToList(addr, name);
-	//				}
-	//			}
-	//		},
-	//		error : function(data, textStatus, jqXHR) {
-	//			alert("error:" + textStatus);
-	//		}
-	//	});
+	var resId = getNowPageRawStreamId();
+	if(resId != "" && resId != "index") {
+		nowRawStreamId = resId;
+		updateRawCameraBox();
+			updateEffectCameraBox();
+	}
 
 	$("#close").click(function() {
 		clearCameraBox();
 	});
 
-	$("#dialog-form").dialog({
+	$("#add-raw-dialog").dialog({
+		autoOpen: false,
+		height: 300,
+		width: 350,
+		modal: true,
+		buttons: {
+			"添加": function() {
+				var name = $("#add-raw-dialog input[name='raw-name']").val();
+				var addr = $("#add-raw-dialog input[name='raw-addr']").val();
+				if(name != "" && addr != "") {
+					$.ajax({
+						type: "POST",
+						url: "./api/v1/camera/addRaw",
+						dataType: "json",
+						contentType: "application/json",
+						data: JSON.stringify({
+							"code": ADD_CAMERA,
+							"name": name,
+							"address": addr
+						}),
+						async: false,
+						success: function(data, textStatus, jqXHR) {
+							if(data.status == RESULT_SUCCESS) {
+								alert("Raw info: " + JSON.stringify(data));
+								var id = cameraCount;
+								var streamId = data.streamId;
+								// 填充左侧摄像头列表
+								addCameraToList(streamId, name, id);
+							} else if(data.status == RESULT_FAILED) {
+								alert("添加失败：该摄像头已存在！");
+							} else {
+								alert("Error status: " + data.status);
+							}
+						},
+						error: function(data, textStatus, jqXHR) {
+							alert("error:" + textStatus);
+						}
+					});
+					$(this).dialog("close");
+				} else {
+					alert("名称和地址不能为空，请重新输入!");
+				}
+
+			},
+			"取消": function() {
+				$(this).dialog("close");
+			},
+		}
+	});
+
+	$("#add-effect-dialog").dialog({
 		autoOpen: false,
 		height: 300,
 		width: 350,
@@ -440,12 +463,10 @@ jQuery(document).ready(function($) {
 		buttons: {
 			"添加": function() {
 				var effectType = $("#check-effect").val();
-				var paraUl = $("#dialog-form ul:not(.hidden)");
-				var paraNum = $("#dialog-form ul:not(.hidden) li").length;
+				var paraUl = $("#add-effect-dialog ul:not(.hidden)");
+				var paraNum = $("#add-effect-dialog ul:not(.hidden) li").length;
 				var paraDic = {};
-				// --- For jersey-moxy
-				// var paraDicStrForJava = "{\"entry\":[";
-				// --- For jackson-json
+
 				var paraLis = paraUl.children("li");
 				for(var i = 0; i < paraLis.length; i++) {
 					var childs = paraLis[i].children;
@@ -459,14 +480,7 @@ jQuery(document).ready(function($) {
 					var key = input.name;
 					var val = input.value;
 					paraDic[key] = val;
-					//					paraDicStrForJava += "{\"key\":\"" + key + "\",\"value\":" + val + "}";
-					//					if (i < paraLis.length - 1) {
-					//						paraDicStrForJava += ",";
-					//					}
 				}
-				//				paraDicStrForJava += "]}";
-				// alert(paraDicStrForJava);
-				// alert(JSON.stringify(paraDic));
 
 				$.ajax({
 					type: "POST",
@@ -474,24 +488,24 @@ jQuery(document).ready(function($) {
 					dataType: "json",
 					contentType: "application/json",
 					data: JSON.stringify({
-						"code": -1,
-						"rtmpAddr": "",
+						"code": START_EFFECT,
 						"streamId": nowRawStreamId,
 						"effectType": effectType,
-						// "parameters": JSON.parse(paraDicStrForJava)
-						"parameters": paraDic
+						"effectParams": paraDic
 					}),
 					async: false,
 					success: function(data, textStatus, jqXHR) {
-						if(data.code == 0) {
-							var rtmpAddr = data.rtmpAddr;
-							var effectStreamId = data.streamId;
-							addCameraToBox(rtmpAddr, effectStreamId, effectType, paraDic, effectStreamCount);
+						if(data.status == RESULT_SUCCESS) {
+							alert("添加处理效果成功！effect infos: " + JSON.stringify(data));
+							var rtmpAddr = data.rtmpAddress
+							var id = data.id;
+							var topoId = data.topoId;
+							addCameraToBox(rtmpAddr, topoId, effectType, paraDic, id);
 							effectStreamCount++;
-						} else if(data.code == -1) {
-							alert("添加失败：该效果已存在！");
+						} else if(data.status == RESULT_FAILED) {
+							alert("添加失败！effect infos:" + JSON.stringify(data));
 						} else {
-							alert("Error code:" + data.code);
+							alert("失败未知！Error code:" + data.status);
 						}
 					},
 					error: function(data, textStatus, jqXHR) {
@@ -501,109 +515,112 @@ jQuery(document).ready(function($) {
 
 				$(this).dialog("close");
 			},
-			Cancel: function() {
+			"取消": function() {
 				$(this).dialog("close");
 			}
-		},
-		close: function() {
-			// allFields.val("").removeClass("ui-state-error");
 		}
 	});
 	// 添加效果按钮，弹出效果选择对话框
-	$("#add_new").click(function() {
-			$("#dialog-form").dialog("open");
+	$("#add-effect").click(function() {
+			$("#add-effect-dialog").dialog("open");
 		}
 
 	);
-	$("#dialog-form #check-effect").change(function() {
+	$("#add-effect-dialog #check-effect").change(function() {
 		checkEffect($("#check-effect").val());
 	});
 
 	// 添加按钮，目的是添加摄像头，同../js/index.js的功能
-	$("#add").click(function() {
-		var addAddr = prompt("输入要添加的设备地址：");
-		var name = "摄像头" + cameraCount;
-		// 填充左侧摄像头列表
-
-		if(addAddr) {
-			// 提交用户输入的地址
-			$.ajax({
-				type: "POST",
-				url: "./api/v1/camera/add",
-				dataType: "json",
-				contentType: "application/json",
-				data: JSON.stringify({
-					"code": -1,
-					"addr": addAddr + "",
-					"rtmpAddr": "",
-					"streamId": ""
-				}),
-				async: false,
-				success: function(data, textStatus, jqXHR) {
-					if(data.code == 0) {
-						var id = cameraCount;
-						var streamId = data.streamId;
-						// 填充左侧摄像头列表
-						addCameraToList(streamId, id);
-					} else if(data.code == -1) {
-						alert("添加失败：该摄像头已存在！");
-					} else {
-						alert("Error code: " + data.code);
-					}
-				},
-				error: function(data, textStatus, jqXHR) {
-					alert("error:" + textStatus);
-				}
-			});
-		} else {
-			alert("Invalid Video Address!");
-		}
+	$("#add-raw").click(function() {
+		$("#add-raw-dialog").dialog("open");
 	});
 
-	//	$("#close").click(function() {
-	//		if (addr) {
-	//			$.ajax({
-	//				type: "GET",
-	//				url: "./api/v1/camera/close?addr=" + addr,
-	//				dataType: "json",
-	//				contentType: "application/json",
-	//				async: true,
-	//				success: function(data, textStatus, jqXHR) {
-	//					alert("Info:" + data.message);
-	//				},
-	//				error: function(data, textStatus, jqXHR) {
-	//					alert("error:" + textStatus);
-	//				}
-	//			});
-	//		}
-	//	});
-
-	// 删除视频
-	$(document).on("click",
-		".left-menu .leftnav-camlist .camlist-ul .camlist-li .delete",
-		function() {
-			var topic = $(this).parent().attr("id");
-			var srcAddr = $(this).parent().attr("text");
-
-			$.ajax({
-				type: "post",
-				url: "./api/v1/camera/delete",
-				dataType: "json",
-				contentType: "application/json",
-				data: JSON.stringify({
-					"topic": topic + "",
-					"addr": srcAddr + ""
-				}),
-				async: true,
-				success: function(data, textStatus, jqXHR) {
-					alert("成功删除:\n\n" + JSON.stringify(data));
-				},
-				error: function(data, textStatus, jqXHR) {
-					alert("error:" + textStatus);
+	// 开始播放按钮，目的是播放原生视频
+	$("#start_raw").click(function() {
+		$.ajax({
+			type: "POST",
+			url: "./api/v1/camera/startRaw",
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify({
+				"code": START_RAW,
+				"streamId": nowRawStreamId
+			}),
+			async: false,
+			success: function(data, textStatus, jqXHR) {
+				if(data.status == RESULT_SUCCESS) {
+					alert("开始播放！raw infos: " + JSON.stringify(data));
+					fillRawRtmpInfoToBox(data.streamId, data.rtmpAddress);
+				} else if(data.status = RESULT_FAILED) {
+					alert("播放失败！raw infos: " + JSON.stringify(data));
 				}
-			});
-
-			$(this).parent().remove();
+			},
+			error: function(data, textStatus, jqXHR) {
+				alert("error:" + textStatus);
+			}
 		});
 
+	});
+
+	// 停止播放按钮，目的是停止播放当前页面原生视频
+	$("#stop_raw").click(function() {
+		$.ajax({
+			type: "POST",
+			url: "./api/v1/camera/stopRaw",
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify({
+				"code": END_RAW,
+				"streamId": nowRawStreamId
+			}),
+			async: false,
+			success: function(data, textStatus, jqXHR) {
+				if(data.status == RESULT_SUCCESS) {
+					alert("停止播放！raw infos: " + JSON.stringify(data));
+					clearRawRtmpInfoInBox();
+				} else if(data.status == RESULT_FAILED) {
+					alert("停止失败！raw infos： " + JSON.stringify(data));
+				}
+			},
+			error: function(data, textStatus, jqXHR) {
+				alert("error:" + textStatus);
+			}
+		});
+	});
 });
+
+// 删除视频
+$(document).on("click",
+	".left-menu .leftnav-camlist .camlist-ul .camlist-li .delete",
+	function() {
+		var topic = $(this).parent().attr("id");
+		var srcAddr = $(this).parent().attr("text");
+
+		$.ajax({
+			type: "post",
+			url: "./api/v1/camera/deleteRaw",
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify({
+				"code": DELETE_CAMERA,
+				"streamId": nowRawStreamId
+			}),
+			async: false,
+			success: function(data, textStatus, jqXHR) {
+				if(data.status == RESULT_SUCCESS) {
+					alert("成功删除原生摄像头！raw infos：" + JSON.stringify(data));
+					self.location="index.html"; 
+				} else if(data.status == RESULT_FAILED) {
+					alert("删除失败！raw infos：" + JSON.stringify(data));
+				} else {
+					alert("未知错误！raw infos：" + JSON.stringify(data));
+				}
+
+			},
+			error: function(data, textStatus, jqXHR) {
+				alert("error:" + textStatus);
+			}
+		});
+
+		$(this).parent().remove();
+	});

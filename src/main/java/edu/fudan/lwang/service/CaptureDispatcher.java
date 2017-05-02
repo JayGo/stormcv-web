@@ -22,8 +22,8 @@ public class CaptureDispatcher {
 	private final int serverMsgPort = 8998;
 	private final int serverDataPort = 8999;
 
-//	private final String stormMaster = "10.134.142.141";
-	private final String stormMaster = "10.134.142.114";
+	private final String stormMaster = "10.134.142.141";
+//	private final String stormMaster = "10.134.142.114";
 	private final int stormcvCoreMsgPort = 8999;
 
 //	private static String[] serverIps = { "10.134.142.101", "10.134.142.104", "10.134.142.106", "10.134.142.107",
