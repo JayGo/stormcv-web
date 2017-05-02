@@ -58,7 +58,7 @@ public class CameraInfoFetcher implements Runnable {
 
 	private void updateSql(CameraInfo info) {
 		try {
-			DBManager.getInstance().geJdbcTemplate()
+			DBManager.getInstance().getJdbcTemplate()
 					.update("UPDATE " + DBManager.CAMERA_INFO_TABLE
 							+ " SET valid=?, width=?, height=?, frame_rate=? WHERE stream_id=?",
 							new Object[] { (info.isValid() ? 0 : 1), info.getWidth(), info.getHeight(),
