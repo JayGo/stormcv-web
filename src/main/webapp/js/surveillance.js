@@ -258,6 +258,7 @@ function initCameraList() {
 			if(data.length == 0) {
 				alert("Camera list is empty!");
 			} else {
+				alert("all cameras infos: "+JSON.stringify(data));
 				for(var i = 0; i < data.length; i++) {
 					var id = cameraCount;
 					var streamId = data[i].streamId;
@@ -297,12 +298,12 @@ function updateEffectCameraBox() {
 			if(data != undefined) {
 				for(var i = 0; i < data.length; i++) {
 					alert("effect infos: "+JSON.stringify(data[i]));
-					var topoId = data[i].topoId;
+					var topoName = data[i].topoName;
 					var rtmpAddr = data[i].rtmpAddress;
 					var effectType = data[i].effectType;
 					var effectParams = data[i].effectParams;
 					var id = data[i].id;
-					addCameraToBox(rtmpAddr, topoId, effectType, effectParams, id);
+					addCameraToBox(rtmpAddr, topoName, effectType, effectParams, id);
 					effectStreamCount++;
 				}
 			} else {
@@ -393,13 +394,22 @@ function fillCameraInfoToBox(name, addr, width, height, frameRate) {
 
 jQuery(document).ready(function($) {
 
-	initCameraList();
-	var resId = getNowPageRawStreamId();
-	if(resId != "" && resId != "index") {
-		nowRawStreamId = resId;
-		updateRawCameraBox();
-			updateEffectCameraBox();
-	}
+//	initCameraList();
+//	var resId = getNowPageRawStreamId();
+//	if(resId != "" && resId != "index") {
+//		nowRawStreamId = resId;
+//		updateRawCameraBox();
+//			updateEffectCameraBox();
+//	}
+	$("#raw-info").popover({
+		trigger: 'hover',
+		placement: 'bottom', //top, bottom, left or right
+		title: '详细信息',
+		html: 'true',
+		content: '<h4>原始内容</h4>'
+	});
+
+//	$("#raw-info").data('bs.popover').options.content = '<h4>改变的内容</h4>';
 
 	$("#close").click(function() {
 		clearCameraBox();
@@ -499,8 +509,8 @@ jQuery(document).ready(function($) {
 							alert("添加处理效果成功！effect infos: " + JSON.stringify(data));
 							var rtmpAddr = data.rtmpAddress
 							var id = data.id;
-							var topoId = data.topoId;
-							addCameraToBox(rtmpAddr, topoId, effectType, paraDic, id);
+							var topoName = data.topoName;
+							addCameraToBox(rtmpAddr, topoName, effectType, paraDic, id);
 							effectStreamCount++;
 						} else if(data.status == RESULT_FAILED) {
 							alert("添加失败！effect infos:" + JSON.stringify(data));

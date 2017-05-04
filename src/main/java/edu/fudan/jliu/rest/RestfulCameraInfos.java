@@ -168,6 +168,13 @@ public class RestfulCameraInfos {
 		logger.info("[allCamerasList]All camera infos(json): {}", array.toString());
 		return array.toString();
 	}
+	
+	@GET
+	@Path("/allCamerasAndRtmpsList")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String allCamerasAndRtmpsList() {
+		return cameraDao.getAllCameraAndRtmpInfos().toString();
+	}
  	
 	private String getStreamIdByAddr(String addr) {
 		return addr.hashCode() < 0 ? ("" + addr.hashCode()).replace("-", "a") : addr.hashCode() + "";

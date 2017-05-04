@@ -50,9 +50,49 @@ function initCameraList() {
 	});
 }
 
+var qRawMap = {};
+var qEffectMap = {};
+
+function startToPollResult(streamId) {
+	var qId = window.setInterval(function() {
+		queryInfo(streamId)
+	}, 1000);
+	alert("start to poll process result! " + qId);
+	qRawMap[streamId] = qId;
+}
+
+function initRawsInfos() {
+	$.ajax({
+		async: false,
+		type: "GET",
+		url: "./api/v1/camera/allCamerasAndRtmpsList",
+		dataType: "json",
+		contentType: "application/json",
+		success: function(data, textStatus, jqXHR) {
+			if(data.length == 0) {
+				alert("CameraAndRtmp list is empty!");
+			} else {
+				alert(JSON.stringify(data));
+				for(var i = 0; i < data.length; i++) {
+					var id = cameraCount;
+					var streamId = data[i].streamId;
+					var name = data[i].name;
+				}
+			}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			alert(XMLHttpRequest.status);
+			alert(XMLHttpRequest.readyState);
+			alert(textStatus);
+			alert("errorThrown:" + errorThrown);
+		}
+	});
+}
+
 jQuery(document).ready(function($) {
 
 	initCameraList();
+	initRawsInfos();
 
 	$("#add-raw-dialog").dialog({
 		autoOpen: false,

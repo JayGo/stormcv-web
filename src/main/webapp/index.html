@@ -21,6 +21,14 @@
 		<link rel="stylesheet" href="common/css/jquery-ui.min.css">
 		<script type="text/javascript" src="common/js/jquery-ui.min.js"></script>
 		<link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
+
+		<link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+		<link href="css/bootstrap-table-expandable.css" rel="stylesheet" type="text/css" >
+		<script src="js/bootstrap-table-expandable.js"></script>
+
 		<title>视频监控</title>
 	</head>
 
@@ -150,20 +158,102 @@
 							<div class="border2"></div>
 						</div>
 					</div>
-					<div id="stream-list-content" class="items">
-						<ul id="stream-list-contentbox" class="play-list">
+					<caption id="raw-info-table-tit"><h3>摄像头信息</h3></caption>
+					<table id="raw-info-table" class="table table-hover table-expandable">
+						<thead>
+							<tr>
+								<th>名称</th>
+								<th>地址</th>
+								<th>Stream ID</th>
+								<th>播放地址</th>
+								<th>画面尺寸</th>
+								<th>播放帧率fps</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td name="name">bb480</td>
+								<td name="address">rtsp://1.1.1.1/</td>
+								<td name="streamId">a123456789</td>
+								<td name="rtmpAddress">rtmp://0.0.0.0/</td>
+								<td name="frameSize">640x480</td>
+								<td name="frameRate">24.3</td>
+							</tr>
+							<tr>
+								<td colspan="5" >
+									<table class="table" >
+										<thead >
+											<tr>
+												<th name="effectType">处理效果</th>
+												<th name="effectParams">参数</th>
+												<th name="streamId">Stream ID</th>
+												<th name="rtmpAddress">播放地址</th>
+												<th name="topoName">Topology ID</th>
+											</tr>
+										</thead>
 
-						</ul>
-					</div>
-					<div class="videosection ">
-						<ul class="video-list ">
+										<tbody>
+											<tr>
+												<td for="effectType">colorHistogram</th>
+												<td for="effectParams">r:0.1 g:0.2 b:0.7</th>
+												<td for="streamId">a987654321</th>
+												<td for"rtmpAddress">rtmp://3.3.3.3</td></th>
+												<td for="topoName">topo_colorHistogram_a987654321</th>
+											</tr>
+										</tbody>
 
-						</ul>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td name="name">pl720</td>
+								<td name="address">rtsp://2.2.2.2/</td>
+								<td name="streamId">a123456789</td>
+								<td name="rtmpAddress">rtmp://0.0.0.0/</td>
+								<td name="frameSize">1280x720</td>
+								<td name="frameRate">24.3</td>
+							</tr>
+														<tr>
+								<td colspan="5" >
+									<table class="table" >
+										<thead >
+											<tr>
+												<th name="effectType">处理效果</th>
+												<th name="effectParams">参数</th>
+												<th name="streamId">Stream ID</th>
+												<th name="rtmpAddress">播放地址</th>
+												<th name="topoName">Topology ID</th>
+											</tr>
+										</thead>
 
-					</div>
+										<tbody>
+											<tr>
+												<td for="effectType">colorHistogram</th>
+												<td for="effectParams">r:0.1 g:0.2 b:0.7</th>
+												<td for="streamId">a987654321</th>
+												<td for"rtmpAddress">rtmp://3.3.3.3</td></th>
+												<td for="topoName">topo_colorHistogram_a987654321</th>
+											</tr>
+											
+											<tr>
+												<td for="effectType">gray</th>
+												<td for="effectParams">r:0.4 g:0.5 b:0.1</th>
+												<td for="streamId">a567489142</th>
+												<td for"rtmpAddress">rtmp://4.4.4.4</td></th>
+												<td for="topoName">topo_gray_a987654321</th>
+											</tr>
+										</tbody>
+
+									</table>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 
 				</div>
+
 			</div>
+		</div>
 		</div>
 	</body>
 
