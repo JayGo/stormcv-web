@@ -9,7 +9,7 @@ import java.nio.channels.FileChannel;
 public class CameraPageGenerator {
 	
 	private static CameraPageGenerator instance = null;
-	private final String srcPageName = FileUtil.getProjectPath()+"/src/main/webapp/index.html";
+	private final String srcPageName = FileUtil.getProjectPath()+"/src/main/webapp/surveillance.html";
 	
 	private CameraPageGenerator() {
 
