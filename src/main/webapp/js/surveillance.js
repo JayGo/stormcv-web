@@ -113,7 +113,7 @@ function checkEffect(effectValue) {
 	}
 }
 
-function addCameraToBox(rtmpAddr, topoId, effectType, parameters, id) {
+function addCameraToBox(rtmpAddr, topoName, effectType, parameters, id) {
 	var previewImgAddr = "";
 
 	var box = document.querySelector("#stream-box-template");
@@ -139,9 +139,9 @@ function addCameraToBox(rtmpAddr, topoId, effectType, parameters, id) {
 		paraSection.appendChild(paraItem.content.cloneNode(true));
 	}
 	
-	var rtmpUrl = extractRtmpUrl(rtmpAddr, topoId);
+	var rtmpUrl = extractRtmpUrl(rtmpAddr, topoName);
 	
-	play("player" + id, topoId, rtmpUrl);
+	play("player" + id, topoName, rtmpUrl);
 }
 
 function initialPlayer(rtmpAddr, streamId) {
@@ -297,12 +297,12 @@ function updateEffectCameraBox() {
 			if(data != undefined) {
 				for(var i = 0; i < data.length; i++) {
 					alert("effect infos: "+JSON.stringify(data[i]));
-					var topoId = data[i].topoId;
+					var topoName = data[i].topoName;
 					var rtmpAddr = data[i].rtmpAddress;
 					var effectType = data[i].effectType;
 					var effectParams = data[i].effectParams;
 					var id = data[i].id;
-					addCameraToBox(rtmpAddr, topoId, effectType, effectParams, id);
+					addCameraToBox(rtmpAddr, topoName, effectType, effectParams, id);
 					effectStreamCount++;
 				}
 			} else {
@@ -499,8 +499,8 @@ jQuery(document).ready(function($) {
 							alert("添加处理效果成功！effect infos: " + JSON.stringify(data));
 							var rtmpAddr = data.rtmpAddress
 							var id = data.id;
-							var topoId = data.topoId;
-							addCameraToBox(rtmpAddr, topoId, effectType, paraDic, id);
+							var topoName = data.topoName;
+							addCameraToBox(rtmpAddr, topoName, effectType, paraDic, id);
 							effectStreamCount++;
 						} else if(data.status == RESULT_FAILED) {
 							alert("添加失败！effect infos:" + JSON.stringify(data));
