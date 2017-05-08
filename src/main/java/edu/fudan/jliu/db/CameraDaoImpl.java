@@ -425,7 +425,7 @@ public class CameraDaoImpl implements CameraDao {
 
 		Map<String, Object> row = null;
 		try {
-			row = dbManager.geJdbcTemplate().queryForMap(
+			row = dbManager.getJdbcTemplate().queryForMap(
 					"SELECT * FROM " + DBManager.CAMERA_INFO_TABLE + " LEFT JOIN  " + DBManager.RAW_RTMP_TABLE + " USING (stream_id) WHERE stream_id="+streamId);
 			ret = new JSONObject();
 			ret.put("name", Utils.extractNameFromStreamID((String)row.get("stream_id")));
@@ -455,7 +455,7 @@ public class CameraDaoImpl implements CameraDao {
 
 		List<Map<String, Object>> rows = null;
 		try {
-			rows =  dbManager.geJdbcTemplate().queryForList(
+			rows =  dbManager.getJdbcTemplate().queryForList(
 					"SELECT * FROM " + DBManager.CAMERA_INFO_TABLE + " LEFT JOIN  " + DBManager.RAW_RTMP_TABLE + " USING (stream_id)");
 			
 			Iterator<Map<String, Object>> iterator = rows.iterator();
