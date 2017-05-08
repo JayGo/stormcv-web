@@ -167,9 +167,9 @@ function initEffectBox(rtmpAddr, topoId, effectType, parameters, id) {
 		content: effectInfoContent
 	});
 	
-	var rtmpUrl = extractRtmpUrl(rtmpAddr, topoName);
+	var rtmpUrl = extractRtmpUrl(rtmpAddr, topoId);
 	
-	play("player" + id, topoName, rtmpUrl);
+	play("player" + id, topoId, rtmpUrl);
 }
 
 function initialPlayer(rtmpAddr, streamId) {
