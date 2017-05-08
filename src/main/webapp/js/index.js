@@ -29,7 +29,7 @@ function initCameraList() {
 		contentType: "application/json",
 		success: function(data, textStatus, jqXHR) {
 			if(data.length == 0) {
-				alert("Camera list is empty!");
+//				alert("Camera list is empty!");
 			} else {
 				for(var i = 0; i < data.length; i++) {
 					var id = cameraCount;
@@ -70,9 +70,9 @@ function initRawsInfos() {
 		contentType: "application/json",
 		success: function(data, textStatus, jqXHR) {
 			if(data.length == 0) {
-				alert("CameraAndRtmp list is empty!");
+//				alert("CameraAndRtmp list is empty!");
 			} else {
-				alert(JSON.stringify(data));
+//				alert(JSON.stringify(data));
 				for(var i = 0; i < data.length; i++) {
 					var id = cameraCount;
 					var streamId = data[i].streamId;
@@ -81,8 +81,8 @@ function initRawsInfos() {
 			}
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
-			alert(XMLHttpRequest.status);
-			alert(XMLHttpRequest.readyState);
+//			alert(XMLHttpRequest.status);
+//			alert(XMLHttpRequest.readyState);
 			alert(textStatus);
 			alert("errorThrown:" + errorThrown);
 		}
@@ -117,7 +117,7 @@ jQuery(document).ready(function($) {
 						async: false,
 						success: function(data, textStatus, jqXHR) {
 							if(data.status == RESULT_SUCCESS) {
-								alert("Raw info: " + JSON.stringify(data));
+//								alert("Raw info: " + JSON.stringify(data));
 								var id = cameraCount;
 								var streamId = data.streamId;
 								// 填充左侧摄像头列表

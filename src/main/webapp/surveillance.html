@@ -3,7 +3,11 @@
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
+		<link rel="stylesheet" href="common/css/jquery-ui.min.css">
+		
+		<link rel="stylesheet" href="common/css/style.css">
+		
+		<link rel="stylesheet" href="common/css/bootstrap-3.3.7.min.css">
 		<link href="common/css/header.css" type="text/css" rel="stylesheet" />
 		<link href="common/css/base.css" type="text/css" rel="stylesheet" />
 		<link href="common/css/app.css" type="text/css" rel="stylesheet" />
@@ -12,10 +16,9 @@
 		<link href="css/mainbody.css" type="text/css" rel="stylesheet" />
 		<link href="css/list.css" type="text/css" rel="stylesheet" />
 		
-		<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="common/js/jquery-2.1.1.min.js"></script>
 		<script type="text/javascript" src="common/js/jquery-ui.min.js"></script>
-		<!--<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>-->
-		<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="common/js/bootstrap-3.3.7.min.js"></script>
 		
 		
 		<script type="text/javascript" src="common/js/common-javascript.js"></script>
@@ -23,11 +26,7 @@
 		<script type="text/javascript" src="js/surveillance.js"></script>
 		<script type="text/javascript" src="js/common.js"></script>
 
-		<link rel="stylesheet" href="common/css/jquery-ui.min.css">
-		
-		<link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
-		
-		<link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+
 
 		<title>视频监控</title>
 	</head>
@@ -157,6 +156,7 @@
 							<div class="border2"></div>
 						</div>
 						<button id="add-effect" type="button">添加效果</button>
+<!--						<button id="test-effect" type="button">测试效果窗</button>-->
 					</div>
 					<div id="add-effect-dialog" title="添加处理效果">
 						<p class="effetc-tip">选择处理效果：</p>
@@ -185,11 +185,11 @@
 
 						<ul id="canny-parameter-list" class="hidden">
 							<li>
-								<label for="l_th">l_th: </label>
+								<label for="l_th">检测的低阈值l_th: </label>
 								<input type="text" name="l_th" class="text ui-widget-content ui-corner-all ">
 							</li>
 							<li>
-								<label for="h_th">h_th: </label>
+								<label for="h_th">检测的高阈值h_th: </label>
 								<input type="text" name="h_th" class="text ui-widget-content ui-corner-all ">
 							</li>
 						</ul>
@@ -254,8 +254,8 @@
 										</div>-->
 										
 										<div class="mes-tit">
-											<button id="start_raw" type="button" class="btn btn-success ">开始播放</button>
-											<button id="stop_raw" type="button" class="btn btn-primary ">停止播放</button>
+											<button id="start-raw" type="button" class="btn btn-success">开始播放</button>
+											<button id="stop-raw" type="button" class="btn">停止播放</button>
 											<button id="raw-info" type="button" class="btn btn-warning fr" data-toggle="popover" data-container="body">详细信息</button>
 										</div>
 									</div>
@@ -274,16 +274,13 @@
 
 										<div class="mes">
 											<div class="mes-tit">
-												<h3 class="ellipsis"></h3>
-											<span class="tag ellipsis"></span>
+												<button type="button" class="btn btn-success " onclick="changeParas(this)">修改参数</button>
+												<button type="button" class="btn btn-primary hidden" onclick="commitChangeParas(this)">提交修改</button>
+												<button type="button" class="btn" onclick="deleteEffect(this)">关闭效果</button>
+												<button type="button" class="btn btn-warning fr" data-toggle="popover" data-container="body">详细信息</button>
+											</div>
 										</div>
-									</div>
 
-									<p>
-										<button class="fr" onclick="deleteEffect(this)">关闭效果</button>
-										<button class="fr" onclick="changeParas(this)">修改参数</button>
-										<button class="fr hidden" onclick="commitChangeParas(this)">提交修改</button>
-									</p>
 
 								</div>
 							</li>

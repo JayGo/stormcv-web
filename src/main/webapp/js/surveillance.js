@@ -113,31 +113,59 @@ function checkEffect(effectValue) {
 	}
 }
 
-function addCameraToBox(rtmpAddr, topoId, effectType, parameters, id) {
-	var previewImgAddr = "";
+var popoverInfoTemplate = [
+						'<table class="table popover">',
+							'<tbody class="popover-content">',
+							'</tbody>',
+						'</table>'
+						].join('');
+						
+function getEffectPopoverContent(rtmpAddr, topoId, effectType, parameters, id) {
+	var effectInfoContent = ['<tr>',
+								'<th name="effectType">处理效果</th>',
+								'<td for="effectType">'+effectType+'</td>',
+							'</tr>',	
+							'<tr>',
+								'<th name="effectParams">参数</th>',
+								'<td for="effectParams">'+JSON.stringify(parameters)+'</td>',
+							'</tr>',
+							'<tr>',
+								'<th name="streamId">Stream ID</th>',
+								'<td for="streamId">'+id+'</td>',
+							'</tr>',
+							'<tr>',					
+								'<th name="rtmpAddress">播放地址</th>',
+								'<td for"rtmpAddress">'+rtmpAddr+'</td>',
+							'</tr>',
+							'<tr>',
+								'<th name="topoName">Topology ID</th>',
+								'<td for="topoName">'+topoId+'</td>',					
+							'</tr>'					
+							].join('');
+	return effectInfoContent;
+}
+
+function initEffectBox(rtmpAddr, topoId, effectType, parameters, id) {
 
 	var box = document.querySelector("#stream-box-template");
 
 	box.content.querySelector("li").id = "box" + id;
-	box.content.querySelector(".ellipsis").innerHTML = rtmpAddr;
-	box.content.querySelector(".tag.ellipsis").innerHTML = effectType;
 	box.content.querySelector("a").id = "player" + id;
-
+	
+	var popBtn = box.content.querySelector("[data-toggle='popover']");
+	
 	$("#stream-list-contentbox").append(box.content.cloneNode(true));
 	
+	var effectInfoContent = getEffectPopoverContent(rtmpAddr, topoId, effectType, parameters, id);
 	
-	var paraSection = document.querySelector("#box" + id + " .boxarea .mes");
-	
-	var paraItem = document.querySelector("#parameters-list-template");
-	
-	for(var i in parameters) {
-		paraItem.content.querySelector("label").for = i + "";
-		paraItem.content.querySelector("label").innerHTML = i;
-		paraItem.content.querySelector("input").name = i;
-		paraItem.content.querySelector("input").value = parameters[i];
-		paraItem.content.querySelector("input").setAttribute("disabled", "true");
-		paraSection.appendChild(paraItem.content.cloneNode(true));
-	}
+	$("#box"+id+" [data-toggle='popover']").popover({
+		trigger: 'hover',
+		placement: 'bottom', //top, bottom, left or right
+		title: '详细信息',
+		html: 'true',
+		template: popoverInfoTemplate,
+		content: effectInfoContent
+	});
 	
 	var rtmpUrl = extractRtmpUrl(rtmpAddr, topoId);
 	
@@ -202,11 +230,9 @@ function changeParas(obj) {
 }
 
 function deleteEffect(obj) {
-	var p = obj.parentNode;
-	var span = p.parentNode.getElementsByClassName("mes")[0].getElementsByClassName("mes-tit")[0].getElementsByTagName("SPAN")[0];
-	var effectType = span.innerHTML;
-	var boxId = p.parentNode.parentNode.getAttribute("id");
-	var id = boxId.substring(3); // "box876  -> 876"  
+	var li = obj.parentNode.parentNode.parentNode.parentNode;
+	var boxId = li.getAttribute("id");
+	var id = boxId.substring(3); // "box876  -> 876" 
 	$.ajax({
 		type: "POST",
 		url: "./api/v1/camera/deleteEffect",
@@ -220,8 +246,6 @@ function deleteEffect(obj) {
 		success: function(data, textStatus, jqXHR) {
 			if(data.status == RESULT_SUCCESS) {
 				alert("删除处理效果成功！effect infos: " + JSON.stringify(data));
-				var div = p.parentNode;
-				var li = div.parentNode;
 				li.remove();
 			} else if(data.status == RESULT_FAILED) {
 				alert("添加失败! effect infos: " + JSON.stringify(data));
@@ -256,9 +280,9 @@ function initCameraList() {
 		contentType: "application/json",
 		success: function(data, textStatus, jqXHR) {
 			if(data.length == 0) {
-				alert("Camera list is empty!");
+//				alert("Camera list is empty!");
 			} else {
-				alert("all cameras infos: "+JSON.stringify(data));
+//				alert("all cameras infos: "+JSON.stringify(data));
 				for(var i = 0; i < data.length; i++) {
 					var id = cameraCount;
 					var streamId = data[i].streamId;
@@ -270,8 +294,8 @@ function initCameraList() {
 			}
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
-			alert(XMLHttpRequest.status);
-			alert(XMLHttpRequest.readyState);
+//			alert(XMLHttpRequest.status);
+//			alert(XMLHttpRequest.readyState);
 			alert(textStatus);
 			alert("errorThrown:" + errorThrown);
 		}
@@ -297,13 +321,13 @@ function updateEffectCameraBox() {
 		success: function(data, textStatus, jqXHR) {
 			if(data != undefined) {
 				for(var i = 0; i < data.length; i++) {
-					alert("effect infos: "+JSON.stringify(data[i]));
+//					alert("effect infos: "+JSON.stringify(data[i]));
 					var topoName = data[i].topoName;
 					var rtmpAddr = data[i].rtmpAddress;
 					var effectType = data[i].effectType;
 					var effectParams = data[i].effectParams;
 					var id = data[i].id;
-					addCameraToBox(rtmpAddr, topoName, effectType, effectParams, id);
+					initEffectBox(rtmpAddr, topoName, effectType, effectParams, id);
 					effectStreamCount++;
 				}
 			} else {
@@ -317,6 +341,61 @@ function updateEffectCameraBox() {
 	});
 }
 
+function getPopoverContent(name, address, width, height, frameRate, streamId, rtmpAddress) {
+	var rawInfoContent = ['<tr>',
+		'<th name="effectType">名称</th>',
+		'<td for="effectType">' + name + '</td>',
+		'</tr>',
+		'<tr>',
+		'<th name="address">源地址</th>',
+		'<td for="address">' + address + '</td>',
+		'</tr>',
+		'<tr>',
+		'<th name="frameSize">画面大小</th>',
+		'<td for="frameSize">' + width + 'x' + height + '</td>',
+		'</tr>',
+		'<tr>',
+		'<th name="frameRate">帧率</th>',
+		'<td for="frameRate">' + frameRate + '</td>',
+		'</tr>',
+		'<tr>',
+		'<th name="rtmpAddress">播放地址</th>',
+		'<td for"rtmpAddress">' + rtmpAddress + '</td>',
+		'</tr>',
+		'<tr>',
+		'<th name="streamId">Stream ID</th>',
+		'<td for="streamId">' + streamId + '</td>',
+		'</tr>'
+	].join('');
+	return rawInfoContent;
+}
+
+function updateRawInfoPopover(name, address, width, height, frameRate, streamId, rtmpAddress) {
+	$("#raw-info").data("bs.popover").options.content=getPopoverContent(name, address, width, height, frameRate, streamId, rtmpAddress);
+	if(rtmpAddress != undefined && streamId != undefined) {
+		var rtmpUrl = extractRtmpUrl(rtmpAddress, streamId);
+		play("player0", streamId, rtmpUrl);
+	}
+}
+
+function initRawInfoPopover(name, address, width, height, frameRate, streamId, rtmpAddress) {
+	var rawInfoContent = getPopoverContent(name, address, width, height, frameRate, streamId, rtmpAddress);
+	
+	$("#raw-info").popover({
+		trigger: 'hover',
+		placement: 'bottom', //top, bottom, left or right
+		title: '详细信息',
+		html: 'true',
+		template: popoverInfoTemplate,
+		content: rawInfoContent
+	});
+	
+	if(rtmpAddress != undefined && streamId != undefined) {
+		var rtmpUrl = extractRtmpUrl(rtmpAddress, streamId);
+		play("player0", streamId, rtmpUrl);
+	}
+}
+
 function updateRawCameraBox() {
 	var rtmpAddr = "";
 	var streamId = "";
@@ -328,12 +407,13 @@ function updateRawCameraBox() {
 		contentType: "application/json",
 		success: function(data, textStatus, jqXHR) {
 			if(data.status == RESULT_SUCCESS) {
-				alert("update raw infos:" + JSON.stringify(data));
-				fillCameraInfoToBox(data.name, data.address, data.width, data.height, data.frameRate);
-				// 如果正在播放则显示rtmp地址等信息，并让网页播放器插件进行播放。
-				if(data.rtmpAddress != undefined) {
-					fillRawRtmpInfoToBox(data.streamId, data.rtmpAddress)
-				}
+//				alert("update raw infos:" + JSON.stringify(data));
+//				fillCameraInfoToBox(data.name, data.address, data.width, data.height, data.frameRate);
+//				// 如果正在播放则显示rtmp地址等信息，并让网页播放器插件进行播放。
+//				if(data.rtmpAddress != undefined) {
+//					fillRawRtmpInfoToBox(data.streamId, data.rtmpAddress)
+//				}
+				initRawInfoPopover(data.name, data.address, data.width, data.height, data.frameRate, data.streamId, data.rtmpAddress);				
 			} else {
 				alert("Error code:" + data.status);
 			}
@@ -394,20 +474,14 @@ function fillCameraInfoToBox(name, addr, width, height, frameRate) {
 
 jQuery(document).ready(function($) {
 
-//	initCameraList();
-//	var resId = getNowPageRawStreamId();
-//	if(resId != "" && resId != "index") {
-//		nowRawStreamId = resId;
-//		updateRawCameraBox();
-//			updateEffectCameraBox();
-//	}
-	$("#raw-info").popover({
-		trigger: 'hover',
-		placement: 'bottom', //top, bottom, left or right
-		title: '详细信息',
-		html: 'true',
-		content: '<h4>原始内容</h4>'
-	});
+	initCameraList();
+	var resId = getNowPageRawStreamId();
+	if(resId != "" && resId != "index") {
+		nowRawStreamId = resId;
+		updateRawCameraBox();
+		updateEffectCameraBox();
+	}
+
 
 //	$("#raw-info").data('bs.popover').options.content = '<h4>改变的内容</h4>';
 
@@ -438,7 +512,7 @@ jQuery(document).ready(function($) {
 						async: false,
 						success: function(data, textStatus, jqXHR) {
 							if(data.status == RESULT_SUCCESS) {
-								alert("Raw info: " + JSON.stringify(data));
+//								alert("Raw info: " + JSON.stringify(data));
 								var id = cameraCount;
 								var streamId = data.streamId;
 								// 填充左侧摄像头列表
@@ -463,6 +537,14 @@ jQuery(document).ready(function($) {
 				$(this).dialog("close");
 			},
 		}
+	});
+	
+	$("#test-effect").click(function() {
+		var paraDic = {};
+		paraDic['r'] = 0.1;
+		paraDic['g'] = 0.2;
+		paraDic['b'] = 0.5;
+		initEffectBox("rtmp://0.0.0.0/123", "123", "test-effect", paraDic, 4);
 	});
 
 	$("#add-effect-dialog").dialog({
@@ -510,7 +592,7 @@ jQuery(document).ready(function($) {
 							var rtmpAddr = data.rtmpAddress
 							var id = data.id;
 							var topoName = data.topoName;
-							addCameraToBox(rtmpAddr, topoName, effectType, paraDic, id);
+							initEffectBox(rtmpAddr, topoName, effectType, paraDic, id);
 							effectStreamCount++;
 						} else if(data.status == RESULT_FAILED) {
 							alert("添加失败！effect infos:" + JSON.stringify(data));
@@ -546,7 +628,7 @@ jQuery(document).ready(function($) {
 	});
 
 	// 开始播放按钮，目的是播放原生视频
-	$("#start_raw").click(function() {
+	$("#start-raw").click(function() {
 		$.ajax({
 			type: "POST",
 			url: "./api/v1/camera/startRaw",
@@ -560,7 +642,7 @@ jQuery(document).ready(function($) {
 			success: function(data, textStatus, jqXHR) {
 				if(data.status == RESULT_SUCCESS) {
 					alert("开始播放！raw infos: " + JSON.stringify(data));
-					fillRawRtmpInfoToBox(data.streamId, data.rtmpAddress);
+					updateRawInfoPopover(data.name, data.address, data.width, data.height, data.frameRate, data.streamId, data.rtmpAddress);
 				} else if(data.status = RESULT_FAILED) {
 					alert("播放失败！raw infos: " + JSON.stringify(data));
 				}
@@ -573,7 +655,7 @@ jQuery(document).ready(function($) {
 	});
 
 	// 停止播放按钮，目的是停止播放当前页面原生视频
-	$("#stop_raw").click(function() {
+	$("#stop-raw").click(function() {
 		$.ajax({
 			type: "POST",
 			url: "./api/v1/camera/stopRaw",
@@ -587,7 +669,7 @@ jQuery(document).ready(function($) {
 			success: function(data, textStatus, jqXHR) {
 				if(data.status == RESULT_SUCCESS) {
 					alert("停止播放！raw infos: " + JSON.stringify(data));
-					clearRawRtmpInfoInBox();
+					updateRawInfoPopover(data.name, data.address, data.width, data.height, data.frameRate, data.streamId, data.rtmpAddress);
 				} else if(data.status == RESULT_FAILED) {
 					alert("停止失败！raw infos： " + JSON.stringify(data));
 				}

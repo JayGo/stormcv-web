@@ -273,6 +273,12 @@ public class RestfulCameraInfos {
 			
 			if(info.isValid()) {
 				retJson.put("status", ResultCode.RESULT_SUCCESS);
+				CameraInfo cInfo = cameraDao.getCameraInfo(streamId);
+				retJson.put("name", cInfo.getName());
+				retJson.put("address", cInfo.getAddress());
+				retJson.put("width", cInfo.getWidth());
+				retJson.put("height", cInfo.getHeight());
+				retJson.put("frameRate", cInfo.getFrameRate());
 				retJson.put("host", info.getHost());
 				retJson.put("pid", info.getPid());
 				retJson.put("streamId", streamId);
@@ -303,6 +309,13 @@ public class RestfulCameraInfos {
 				captureDispatcher.sendRequestToStorm(jRequest.toString());
 				cameraDao.deleteRawRtmp(streamId);
 				retJson.put("status", ResultCode.RESULT_SUCCESS);
+				CameraInfo cInfo = cameraDao.getCameraInfo(streamId);
+				retJson.put("name", cInfo.getName());
+				retJson.put("address", cInfo.getAddress());
+				retJson.put("width", cInfo.getWidth());
+				retJson.put("height", cInfo.getHeight());
+				retJson.put("frameRate", cInfo.getFrameRate());
+				retJson.put("streamId", cInfo.getStreamId());
 			} else {
 				retJson.put("status", ResultCode.RESULT_FAILED);
 			}
@@ -429,10 +442,6 @@ public class RestfulCameraInfos {
 		JSONArray ret = new JSONArray(allRawRtmp);
 		return ret.toString();
 	}
-	
-
-	
-
 	
 	@POST
 	@Path("/helloWorld")

@@ -434,7 +434,7 @@ public class CameraDaoImpl implements CameraDao {
 			ret.put("height", (int)row.get("height"));
 			ret.put("width", (int)row.get("width"));
 			ret.put("frameRate", (float)row.get("frame_rate"));
-			ret.put("rtmp_addr", (String) row.get("rtmp_addr"));
+			ret.put("rtmpAddress", (String) row.get("rtmp_addr"));
 			ret.put("valid", ((row.get("valid") == null)? false :((int)row.get("valid") == 0) ? true : false));
 			ret.put("host", (String) row.get("host"));
 			ret.put("pid", (row.get("pid") == null)? 0 :(long)row.get("pid"));
