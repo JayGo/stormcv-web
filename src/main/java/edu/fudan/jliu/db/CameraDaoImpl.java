@@ -86,7 +86,7 @@ public class CameraDaoImpl implements CameraDao {
 	public boolean addCamera(String streamId, String address) {
 		boolean ret = true;
 		try {
-			dbManager.geJdbcTemplate().update("INSERT INTO " + DBManager.CAMERA_INFO_TABLE + " "
+			dbManager.getJdbcTemplate().update("INSERT INTO " + DBManager.CAMERA_INFO_TABLE + " "
 					+ DBManager.CAMERA_INFO_TABLE_SIMPLE_COLS + " VALUES(?, ?)", new Object[] { streamId, address });
 		} catch (Exception e) {
 			ret = false;
@@ -103,7 +103,7 @@ public class CameraDaoImpl implements CameraDao {
 	public boolean deleteCamera(String streamId) {
 		boolean ret = true;
 		try {
-			dbManager.geJdbcTemplate().update("DELETE FROM " + DBManager.CAMERA_INFO_TABLE + " WHERE stream_id = ?",
+			dbManager.getJdbcTemplate().update("DELETE FROM " + DBManager.CAMERA_INFO_TABLE + " WHERE stream_id = ?",
 					new Object[] { streamId });
 		} catch (Exception e) {
 			ret = false;
@@ -119,7 +119,7 @@ public class CameraDaoImpl implements CameraDao {
 	public List<CameraInfo> getAllCameraList() {
 		List<CameraInfo> ret = new ArrayList<>();
 
-		List<Map<String, Object>> rows = dbManager.geJdbcTemplate()
+		List<Map<String, Object>> rows = dbManager.getJdbcTemplate()
 				.queryForList("SELECT * FROM " + DBManager.CAMERA_INFO_TABLE);
 		Iterator<Map<String, Object>> it = rows.iterator();
 		while (it.hasNext()) {
@@ -141,7 +141,7 @@ public class CameraDaoImpl implements CameraDao {
 	public boolean addRawRtmp(RawRtmpInfo info) {
 		boolean ret = true;
 		try {
-			dbManager.geJdbcTemplate()
+			dbManager.getJdbcTemplate()
 					.update("INSERT INTO " + DBManager.RAW_RTMP_TABLE + " " + DBManager.RAW_RTMP_TABLE_COLS
 							+ " VALUES(?, ?, ?, ?, ?)",
 							new Object[] { info.getStreamId(), info.getRtmpAddress(), info.getHost(), info.getPid(),
@@ -161,7 +161,7 @@ public class CameraDaoImpl implements CameraDao {
 	public boolean deleteRawRtmp(String streamId) {
 		boolean ret = true;
 		try {
-			dbManager.geJdbcTemplate().update("DELETE FROM " + DBManager.RAW_RTMP_TABLE + " WHERE stream_id = ?",
+			dbManager.getJdbcTemplate().update("DELETE FROM " + DBManager.RAW_RTMP_TABLE + " WHERE stream_id = ?",
 					new Object[] { streamId });
 		} catch (Exception e) {
 			ret = false;
@@ -176,7 +176,7 @@ public class CameraDaoImpl implements CameraDao {
 	@Override
 	public List<RawRtmpInfo> getAllRawRtmp() {
 		List<RawRtmpInfo> ret = new ArrayList<>();
-		List<Map<String, Object>> rows = dbManager.geJdbcTemplate()
+		List<Map<String, Object>> rows = dbManager.getJdbcTemplate()
 				.queryForList("SELECT * FROM " + DBManager.RAW_RTMP_TABLE);
 		Iterator<Map<String, Object>> it = rows.iterator();
 		while (it.hasNext()) {
@@ -213,7 +213,7 @@ public class CameraDaoImpl implements CameraDao {
 					+ " VALUES(?, ?, ?, ?, ?, ?)";
 
 			KeyHolder keyHolder = new GeneratedKeyHolder();
-			dbManager.geJdbcTemplate().update(new PreparedStatementCreator() {
+			dbManager.getJdbcTemplate().update(new PreparedStatementCreator() {
 				@Override
 				public java.sql.PreparedStatement createPreparedStatement(java.sql.Connection connection)
 						throws SQLException {
@@ -246,7 +246,7 @@ public class CameraDaoImpl implements CameraDao {
 	public boolean deleteEffectRtmp(int id) {
 		boolean ret = true;
 		try {
-			dbManager.geJdbcTemplate().update("DELETE FROM " + DBManager.EFFECT_RTMP_TABLE + " WHERE id = ?",
+			dbManager.getJdbcTemplate().update("DELETE FROM " + DBManager.EFFECT_RTMP_TABLE + " WHERE id = ?",
 					new Object[] { id });
 		} catch (Exception e) {
 			ret = false;
@@ -261,7 +261,7 @@ public class CameraDaoImpl implements CameraDao {
 	@Override
 	public List<EffectRtmpInfo> getAllEffectRtmp() {
 		List<EffectRtmpInfo> ret = new ArrayList<>();
-		List<Map<String, Object>> rows = dbManager.geJdbcTemplate()
+		List<Map<String, Object>> rows = dbManager.getJdbcTemplate()
 				.queryForList("SELECT * FROM " + DBManager.EFFECT_RTMP_TABLE);
 		Iterator<Map<String, Object>> it = rows.iterator();
 		while (it.hasNext()) {
@@ -285,7 +285,7 @@ public class CameraDaoImpl implements CameraDao {
 	public String getCameraAddress(String streamId) {
 		String address = null;
 		try {
-			address = dbManager.geJdbcTemplate().queryForObject(
+			address = dbManager.getJdbcTemplate().queryForObject(
 					"SELECT address FROM " + DBManager.CAMERA_INFO_TABLE + " WHERE stream_id = ?",
 					new Object[] { streamId }, String.class);
 		} catch (Exception e) {
@@ -298,7 +298,7 @@ public class CameraDaoImpl implements CameraDao {
 	public String getCameraRawRtmpAddress(String streamId) {
 		String address = null;
 		try {
-			address = dbManager.geJdbcTemplate().queryForObject(
+			address = dbManager.getJdbcTemplate().queryForObject(
 					"SELECT rtmp_addr FROM " + DBManager.RAW_RTMP_TABLE + " WHERE stream_id = ?",
 					new Object[] { streamId }, String.class);
 		} catch (Exception e) {
@@ -311,7 +311,7 @@ public class CameraDaoImpl implements CameraDao {
 	public String getCameraEffectRtmpAddress(int id) {
 		String address = null;
 		try {
-			address = dbManager.geJdbcTemplate().queryForObject(
+			address = dbManager.getJdbcTemplate().queryForObject(
 					"SELECT rtmp_addr FROM " + DBManager.EFFECT_RTMP_TABLE + " WHERE id = ? ", new Object[] { id },
 					String.class);
 		} catch (Exception e) {
@@ -323,7 +323,7 @@ public class CameraDaoImpl implements CameraDao {
 	@Override
 	public List<EffectRtmpInfo> getCameraAllEffectRtmp(String streamId) {
 		List<EffectRtmpInfo> ret = new ArrayList<>();
-		List<Map<String, Object>> rows = dbManager.geJdbcTemplate().queryForList(
+		List<Map<String, Object>> rows = dbManager.getJdbcTemplate().queryForList(
 				"SELECT * FROM " + DBManager.EFFECT_RTMP_TABLE + " WHERE stream_id = ?", new Object[] { streamId });
 		Iterator<Map<String, Object>> it = rows.iterator();
 		while (it.hasNext()) {
@@ -353,7 +353,7 @@ public class CameraDaoImpl implements CameraDao {
 
 		Map<String, Object> rows = null;
 		try {
-			rows = dbManager.geJdbcTemplate().queryForMap(
+			rows = dbManager.getJdbcTemplate().queryForMap(
 					"SELECT * FROM " + DBManager.RAW_RTMP_TABLE + " WHERE stream_id = ?", new Object[] { streamId });
 			ret = new RawRtmpInfo();
 			ret.setStreamId((String) rows.get("stream_id"));
@@ -381,7 +381,7 @@ public class CameraDaoImpl implements CameraDao {
 	@Override
 	public EffectRtmpInfo getCameraEffectRtmpInfo(int id) {
 		EffectRtmpInfo ret = new EffectRtmpInfo();
-		Map<String, Object> rows = dbManager.geJdbcTemplate()
+		Map<String, Object> rows = dbManager.getJdbcTemplate()
 				.queryForMap("SELECT * FROM " + DBManager.EFFECT_RTMP_TABLE + " WHERE id = ?", new Object[] { id });
 		ret.setId(id);
 		ret.setStreamId((String) rows.get("stream_id"));
@@ -404,7 +404,7 @@ public class CameraDaoImpl implements CameraDao {
 	public CameraInfo getCameraInfo(String streamId) {
 		CameraInfo ret = new CameraInfo();
 
-		Map<String, Object> queryRet = dbManager.geJdbcTemplate().queryForMap(
+		Map<String, Object> queryRet = dbManager.getJdbcTemplate().queryForMap(
 				"SELECT * FROM " + DBManager.CAMERA_INFO_TABLE + " WHERE stream_id = ?", new Object[] { streamId });
 
 		ret.setStreamId((String) queryRet.get("stream_id"));
