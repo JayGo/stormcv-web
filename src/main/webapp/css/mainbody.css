@@ -267,3 +267,7 @@
 .hidden {
 	display: none;
 }
+
+.mainbody caption h3 {
+	color: #FB8302;
+}

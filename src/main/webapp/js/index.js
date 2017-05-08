@@ -29,7 +29,7 @@ function initCameraList() {
 		contentType: "application/json",
 		success: function(data, textStatus, jqXHR) {
 			if(data.length == 0) {
-				alert("Camera list is empty!");
+//				alert("Camera list is empty!");
 			} else {
 				for(var i = 0; i < data.length; i++) {
 					var id = cameraCount;
@@ -50,9 +50,49 @@ function initCameraList() {
 	});
 }
 
+var qRawMap = {};
+var qEffectMap = {};
+
+function startToPollResult(streamId) {
+	var qId = window.setInterval(function() {
+		queryInfo(streamId)
+	}, 1000);
+	alert("start to poll process result! " + qId);
+	qRawMap[streamId] = qId;
+}
+
+function initRawsInfos() {
+	$.ajax({
+		async: false,
+		type: "GET",
+		url: "./api/v1/camera/allCamerasAndRtmpsList",
+		dataType: "json",
+		contentType: "application/json",
+		success: function(data, textStatus, jqXHR) {
+			if(data.length == 0) {
+//				alert("CameraAndRtmp list is empty!");
+			} else {
+//				alert(JSON.stringify(data));
+				for(var i = 0; i < data.length; i++) {
+					var id = cameraCount;
+					var streamId = data[i].streamId;
+					var name = data[i].name;
+				}
+			}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+//			alert(XMLHttpRequest.status);
+//			alert(XMLHttpRequest.readyState);
+			alert(textStatus);
+			alert("errorThrown:" + errorThrown);
+		}
+	});
+}
+
 jQuery(document).ready(function($) {
 
 	initCameraList();
+	initRawsInfos();
 
 	$("#add-raw-dialog").dialog({
 		autoOpen: false,
@@ -77,7 +117,7 @@ jQuery(document).ready(function($) {
 						async: false,
 						success: function(data, textStatus, jqXHR) {
 							if(data.status == RESULT_SUCCESS) {
-								alert("Raw info: " + JSON.stringify(data));
+//								alert("Raw info: " + JSON.stringify(data));
 								var id = cameraCount;
 								var streamId = data.streamId;
 								// 填充左侧摄像头列表

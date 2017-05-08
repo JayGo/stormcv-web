@@ -2,6 +2,8 @@ package edu.fudan.jliu.model;
 
 import org.json.JSONObject;
 
+import edu.fudan.jliu.util.Utils;
+
 public class CameraInfo {
 	private String streamId;
 	private String address;
@@ -12,7 +14,7 @@ public class CameraInfo {
 	private String name;
 	
 	public String getName() {
-		return (name == null)?extractName(streamId):name;
+		return (name == null)?Utils.extractNameFromStreamID(streamId):name;
 	}
 
 	public void setName(String name) {
@@ -22,10 +24,7 @@ public class CameraInfo {
 	public CameraInfo() {
 	}
 	
-	private String extractName(String streamId) {
-		int lastIndex = streamId.lastIndexOf('_');
-		return streamId.substring(0, lastIndex);
-	}
+
 	
 	public CameraInfo(String streamId, String address,boolean valid) {
 		this.streamId = streamId;

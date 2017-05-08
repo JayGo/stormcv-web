@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import edu.fudan.jliu.model.CameraInfo;
 import edu.fudan.jliu.model.EffectRtmpInfo;
 import edu.fudan.jliu.model.RawRtmpInfo;
+import edu.fudan.jliu.util.Utils;
 
 public class CameraDaoImpl implements CameraDao {
 
@@ -190,6 +192,8 @@ public class CameraDaoImpl implements CameraDao {
 		}
 		return ret;
 	}
+	
+	
 
 	@Override
 	public boolean deleteAllRtmp(String streamId) {
@@ -387,7 +391,7 @@ public class CameraDaoImpl implements CameraDao {
 		ret.setEffectType((String) rows.get("effect_type"));
 		String paramStr = (String) rows.get("effect_params");
 		ret.setEffectParams(new JSONObject(paramStr).toMap());
-		logger.info("[{}]{}", "getCameraRawRtmpInfo", ret.toString());
+		logger.info("[{}]{}", "getCameraRawRtmpInfo: ", ret.toString());
 		return ret;
 	}
 
@@ -410,8 +414,76 @@ public class CameraDaoImpl implements CameraDao {
 		ret.setWidth((int) queryRet.get("width"));
 		ret.setHeight((int) queryRet.get("height"));
 		ret.setFrameRate((float) queryRet.get("frame_rate"));
-		logger.info(ret.toString());
+		logger.info("{}{}","getCameraInfo: ",ret.toString());
 
 		return ret;
+	}
+
+	@Override
+	public JSONObject getCameraAndRtmpInfo(String streamId) {
+		JSONObject ret = null;
+
+		Map<String, Object> row = null;
+		try {
+			row = dbManager.getJdbcTemplate().queryForMap(
+					"SELECT * FROM " + DBManager.CAMERA_INFO_TABLE + " LEFT JOIN  " + DBManager.RAW_RTMP_TABLE + " USING (stream_id) WHERE stream_id="+streamId);
+			ret = new JSONObject();
+			ret.put("name", Utils.extractNameFromStreamID((String)row.get("stream_id")));
+			ret.put("streamId", (String) row.get("stream_id"));
+			ret.put("address", (String) row.get("address"));
+			ret.put("height", (int)row.get("height"));
+			ret.put("width", (int)row.get("width"));
+			ret.put("frameRate", (float)row.get("frame_rate"));
+			ret.put("rtmpAddress", (String) row.get("rtmp_addr"));
+			ret.put("valid", ((row.get("valid") == null)? false :((int)row.get("valid") == 0) ? true : false));
+			ret.put("host", (String) row.get("host"));
+			ret.put("pid", (row.get("pid") == null)? 0 :(long)row.get("pid"));
+			logger.info("[{}]{}", "getCameraAndRtmpInfo", ret.toString());
+		} catch (IncorrectResultSizeDataAccessException e) {
+			// TODO: handle exception
+			logger.info("{} not push to rtmp yet!", streamId);
+		} catch (DataAccessException e) {
+			logger.info("{} no permission!", streamId);
+		}
+		return ret;
+	}
+
+	@Override
+	public JSONArray getAllCameraAndRtmpInfos() {
+		// TODO Auto-generated method stub
+		JSONArray rets = new JSONArray();
+
+		List<Map<String, Object>> rows = null;
+		try {
+			rows =  dbManager.getJdbcTemplate().queryForList(
+					"SELECT * FROM " + DBManager.CAMERA_INFO_TABLE + " LEFT JOIN  " + DBManager.RAW_RTMP_TABLE + " USING (stream_id)");
+			
+			Iterator<Map<String, Object>> iterator = rows.iterator();
+			
+			while (iterator.hasNext()) {
+				JSONObject ret = new JSONObject();
+				Map<String, Object> row = iterator.next();
+				ret.put("name", Utils.extractNameFromStreamID((String)row.get("stream_id")));
+				ret.put("streamId", (String) row.get("stream_id"));
+				ret.put("address", (String) row.get("address"));
+				ret.put("height", (int)row.get("height"));
+				ret.put("width", (int)row.get("width"));
+				ret.put("frameRate", (float)row.get("frame_rate"));
+				ret.put("rtmp_addr", (String) row.get("rtmp_addr"));
+				ret.put("valid", ((row.get("valid") == null)? false :((int)row.get("valid") == 0) ? true : false));
+				ret.put("host", (String) row.get("host"));
+				ret.put("pid", (row.get("pid") == null)? 0 :(long)row.get("pid"));
+				rets.put(ret);
+			}
+			logger.info("[{}]{}", "getAllCameraAndRtmpInfos", rets.toString());
+
+		} catch (IncorrectResultSizeDataAccessException e) {
+			// TODO: handle exception
+			logger.info("no camera yet!");
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+			logger.info("no permission access to db during {}", "getAllCameraAndRtmpInfos");
+		}
+		return rets;
 	}
 }

@@ -4,6 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Utils {
+	
+	public static String extractNameFromStreamID(String streamId) {
+		int lastIndex = streamId.lastIndexOf('_');
+		return streamId.substring(0, lastIndex);
+	}
 
 	/**
 	 * map to string

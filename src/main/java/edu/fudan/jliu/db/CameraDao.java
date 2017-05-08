@@ -2,6 +2,9 @@ package edu.fudan.jliu.db;
 
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import edu.fudan.jliu.model.CameraInfo;
 import edu.fudan.jliu.model.EffectRtmpInfo;
 import edu.fudan.jliu.model.RawRtmpInfo;
@@ -29,4 +32,7 @@ public interface CameraDao {
 	 
 	 RawRtmpInfo getCameraRawRtmpInfo(String streamId);
 	 EffectRtmpInfo getCameraEffectRtmpInfo(int id);
+	 
+	 JSONObject getCameraAndRtmpInfo(String streamId);
+	 JSONArray getAllCameraAndRtmpInfos();
  }
