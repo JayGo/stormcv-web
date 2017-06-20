@@ -23,7 +23,11 @@ public class TopologyWorkerInfo {
         this.memoryUsage = memoryUsage;
     }
 
-    public String getTopoName() {
+    public TopologyWorkerInfo() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public String getTopoName() {
         return topoName;
     }
 

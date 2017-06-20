@@ -35,4 +35,8 @@ public interface CameraDao {
 	 
 	 JSONObject getCameraAndRtmpInfo(String streamId);
 	 JSONArray getAllCameraAndRtmpInfos();
+	 
+	 JSONArray getAllBasicToposInfos();
+	 
+	 
  }

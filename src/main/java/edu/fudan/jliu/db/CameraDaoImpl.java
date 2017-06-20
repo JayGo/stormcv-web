@@ -486,4 +486,41 @@ public class CameraDaoImpl implements CameraDao {
 		}
 		return rets;
 	}
+
+	@Override
+	public JSONArray getAllBasicToposInfos() {
+		// TODO Auto-generated method stub
+		JSONArray rets = new JSONArray();
+
+		List<Map<String, Object>> rows = null;
+		try {
+			rows =  dbManager.getJdbcTemplate().queryForList(
+					"SELECT * FROM " + DBManager.TOPOLOGY_TABLE);
+			
+			Iterator<Map<String, Object>> iterator = rows.iterator();
+			
+			while (iterator.hasNext()) {
+				JSONObject ret = new JSONObject();
+				Map<String, Object> row = iterator.next();
+				ret.put("topoName", (String)row.get("topo_name"));
+				ret.put("topoId", (String) row.get("topo_id"));
+				ret.put("workerNum", (int)row.get("worker_num"));
+				ret.put("owner", (String)row.get("owner"));
+				ret.put("uptimeSecs", (int)row.get("uptime_secs"));
+				ret.put("taskNum", (int) row.get("task_num"));
+				ret.put("executorNum", (int) row.get("executor_num"));
+				ret.put("status", (int) row.get("status"));
+				rets.put(ret);
+			}
+			logger.info("[{}]{}", "getAllBasicToposInfos", rets.toString());
+
+		} catch (IncorrectResultSizeDataAccessException e) {
+			// TODO: handle exception
+			logger.info("no camera yet!");
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+			logger.info("no permission access to db during {}", "getAllCameraAndRtmpInfos");
+		}
+		return rets;
+	}
 }

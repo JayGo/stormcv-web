@@ -24,6 +24,8 @@ import edu.fudan.jliu.constant.RequestCode;
 import edu.fudan.jliu.constant.ResultCode;
 import edu.fudan.jliu.db.CameraDao;
 import edu.fudan.jliu.db.CameraDaoImpl;
+import edu.fudan.jliu.db.TopologyDao;
+import edu.fudan.jliu.db.TopologyDaoImpl;
 import edu.fudan.jliu.model.CameraInfo;
 import edu.fudan.jliu.model.EffectRtmpInfo;
 import edu.fudan.jliu.model.RawRtmpInfo;
@@ -37,7 +39,8 @@ import edu.fudan.lwang.service.CaptureDispatcher;
 public class RestfulCameraInfos {
 	
 	private static final Logger logger =LoggerFactory.getLogger(RestfulCameraInfos.class);
-	private static final CameraDao cameraDao = new CameraDaoImpl(); 	
+	private static final CameraDao cameraDao = new CameraDaoImpl();
+	private static final TopologyDao topologyDao = new TopologyDaoImpl();
 	private static CameraPageGenerator cpg = CameraPageGenerator.getInstance();
 	private static CaptureDispatcher captureDispatcher = new CaptureDispatcher();
 
@@ -45,6 +48,7 @@ public class RestfulCameraInfos {
 		
 	}
 	
+	// Ignore this main(), just for test.
 	public static void main(String[] args) {
 		/*TODO*/
 		RestfulCameraInfos restfulCameraInfos = new RestfulCameraInfos();
@@ -414,6 +418,9 @@ public class RestfulCameraInfos {
 				jRequest.put("topoName", effectRtmpInfo.getTopoName());
 				captureDispatcher.sendRequestToStorm(jRequest.toString());
 				cameraDao.deleteEffectRtmp(id);
+				topologyDao.deleteTopologyBasicInfo(effectRtmpInfo.getTopoName());
+				topologyDao.deleteAllTopologyComponentInfo(effectRtmpInfo.getTopoName());
+				topologyDao.deleteAllTopologyWorkerInfo(effectRtmpInfo.getTopoName());
 				retJson.put("status", ResultCode.RESULT_SUCCESS);
 			} else {
 				retJson.put("status", ResultCode.RESULT_FAILED);
@@ -441,6 +448,13 @@ public class RestfulCameraInfos {
 		List<RawRtmpInfo> allRawRtmp = cameraDao.getAllRawRtmp();
 		JSONArray ret = new JSONArray(allRawRtmp);
 		return ret.toString();
+	}
+	
+	@GET
+	@Path("/allBasicToposInfos")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String allBasicToposInfos() {
+		return cameraDao.getAllBasicToposInfos().toString();
 	}
 	
 	@POST

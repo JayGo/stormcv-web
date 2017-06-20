@@ -3,7 +3,11 @@
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
+		<link rel="stylesheet" href="common/css/jquery-ui.min.css">
+		
+		<link rel="stylesheet" href="common/css/style.css">
+		
+		<link rel="stylesheet" href="common/css/bootstrap-3.3.7.min.css">
 		<link href="common/css/header.css" type="text/css" rel="stylesheet" />
 		<link href="common/css/base.css" type="text/css" rel="stylesheet" />
 		<link href="common/css/app.css" type="text/css" rel="stylesheet" />
@@ -11,22 +15,17 @@
 
 		<link href="css/mainbody.css" type="text/css" rel="stylesheet" />
 		<link href="css/list.css" type="text/css" rel="stylesheet" />
-
-		<script type="text/javascript" src="common/js/jquery-1.11.1.min.js"></script>
+		
+		<script src="common/js/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="common/js/jquery-ui.min.js"></script>
+		<script src="common/js/bootstrap-3.3.7.min.js"></script>
+		
+		
 		<script type="text/javascript" src="common/js/common-javascript.js"></script>
-		<script type="text/javascript" src="player/js/flowplayer-3.2.13.min.js"></script>
 		<script type="text/javascript" src="js/index.js"></script>
 		<script type="text/javascript" src="js/common.js"></script>
-
-		<link rel="stylesheet" href="common/css/jquery-ui.min.css">
-		<script type="text/javascript" src="common/js/jquery-ui.min.js"></script>
-		<link rel="stylesheet" href="common/css/style.css">
-
-		<link rel="stylesheet" href="common/css/bootstrap-3.3.7.min.css">
-		<script src="common/js/jquery-2.1.1.min.js"></script>
-		<script src="common/js/bootstrap-3.3.7.min.js"></script>
-
-		<link href="css/bootstrap-table-expandable.css" rel="stylesheet" type="text/css" >
+		
+		<link href="css/bootstrap-table-expandable.css" rel="stylesheet" type="text/css" />
 		<script src="js/bootstrap-table-expandable.js"></script>
 
 		<title>视频监控</title>
@@ -159,7 +158,8 @@
 						</div>
 					</div>
 					<caption id="raw-info-table-tit"><h3>摄像头信息</h3></caption>
-					<table id="raw-info-table" class="table table-hover table-expandable">
+<!--					<table id="raw-info-table" class="table table-hover table-expandable">-->
+					<table id="raw-info-table" class="table table-hover">
 						<thead>
 							<tr>
 								<th>名称</th>
@@ -171,82 +171,53 @@
 							</tr>
 						</thead>
 						<tbody>
-							<!--<tr>
-								<td name="name">bb480</td>
-								<td name="address">rtsp://1.1.1.1/</td>
-								<td name="streamId">a123456789</td>
-								<td name="rtmpAddress">rtmp://0.0.0.0/</td>
-								<td name="frameSize">640x480</td>
-								<td name="frameRate">24.3</td>
-							</tr>
+							<template id="raw-info-tr">
+								<tr>
+									<td name="name" for="name"></td>
+									<td name="address" for="address"></td>
+									<td name="streamId" for="streamId"></td>
+									<td name="rtmpAddress" for="rtmpAddress"></td>
+									<td name="frameSize" for="frameSize"></td>
+									<td name="frameRate" for="frameRate"></td>
+								</tr>
+							</template>
+						</tbody>
+					</table>
+					
+					<caption id="topo-info-table-tit"><h3>Topology信息</h3></caption>
+					
+					<table id="topo-info-table" class="table table-hover">
+						<thead>
 							<tr>
-								<td colspan="5" >
-									<table class="table" >
-										<thead >
-											<tr>
-												<th name="effectType">处理效果</th>
-												<th name="effectParams">参数</th>
-												<th name="streamId">Stream ID</th>
-												<th name="rtmpAddress">播放地址</th>
-												<th name="topoName">Topology ID</th>
-											</tr>
-										</thead>
-
-										<tbody>
-											<tr>
-												<td for="effectType">colorHistogram</th>
-												<td for="effectParams">r:0.1 g:0.2 b:0.7</th>
-												<td for="streamId">a987654321</th>
-												<td for"rtmpAddress">rtmp://3.3.3.3</td></th>
-												<td for="topoName">topo_colorHistogram_a987654321</th>
-											</tr>
-										</tbody>
-
-									</table>
-								</td>
+								<th>Topology名称</th>
+								<th>Topology ID</th>
+								<th>运行用户</th>
+								<th>Executor数目</th>
+								<th>Task数目</th>
+								<th>Worker数目</th>
+								<th>运行时间（ms）</th>
+								<th>运行状态</th>
+								<th>详细信息</th>
 							</tr>
-							<tr>
-								<td name="name">pl720</td>
-								<td name="address">rtsp://2.2.2.2/</td>
-								<td name="streamId">a123456789</td>
-								<td name="rtmpAddress">rtmp://0.0.0.0/</td>
-								<td name="frameSize">1280x720</td>
-								<td name="frameRate">24.3</td>
-							</tr>
-														<tr>
-								<td colspan="5" >
-									<table class="table" >
-										<thead >
-											<tr>
-												<th name="effectType">处理效果</th>
-												<th name="effectParams">参数</th>
-												<th name="streamId">Stream ID</th>
-												<th name="rtmpAddress">播放地址</th>
-												<th name="topoName">Topology ID</th>
-											</tr>
-										</thead>
-
-										<tbody>
-											<tr>
-												<td for="effectType">colorHistogram</th>
-												<td for="effectParams">r:0.1 g:0.2 b:0.7</th>
-												<td for="streamId">a987654321</th>
-												<td for"rtmpAddress">rtmp://3.3.3.3</td></th>
-												<td for="topoName">topo_colorHistogram_a987654321</th>
-											</tr>
-											
-											<tr>
-												<td for="effectType">gray</th>
-												<td for="effectParams">r:0.4 g:0.5 b:0.1</th>
-												<td for="streamId">a567489142</th>
-												<td for"rtmpAddress">rtmp://4.4.4.4</td></th>
-												<td for="topoName">topo_gray_a987654321</th>
-											</tr>
-										</tbody>
-
-									</table>
-								</td>
-							</tr>-->
+						</thead>
+						<tbody>
+							<template id="topo-info-tr">
+								<tr>
+									<td name="topoName" for="topoName"></td>
+									<td name="topoId" for="topoId"></td>
+									<td name="owner" for="owner"></td>
+									<td name="workerNum" for="workerNum"></td>
+									<td name="executorNum" for="executorNum"></td>
+									<td name="taskNum" for="taskNum"></td>
+									<td name="upTime" for="upTime"></td>
+									<td name="status" for="status"></td>
+									<td name="details" for="details">
+										<button name="comp-info-btn" type="button" class="btn btn-primary" data-toggle="popover" data-container="body">组件信息</button>
+										<!--<button name="comp-info-btn" type="button" class="btn btn-primary" data-toggle="popover" data-container="body" onmouseover="updateCompInfo(this)">组件信息</button>-->
+										<button name="worker-info-btn" type="button" class="btn btn-success" data-toggle="popover" data-container="body">节点信息</button>
+									</td>
+								</tr>
+							</template>
 						</tbody>
 					</table>
 

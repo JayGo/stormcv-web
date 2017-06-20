@@ -27,4 +27,5 @@ public interface TopologyDao {
     boolean addTopologyComponentInfo(TopologyComponentInfo componentInfo);
     boolean deleteAllTopologyComponentInfo(String topoName);
     List<TopologyComponentInfo> getAllTopologyComponentInfo(String topoName);
+    List<TopologyWorkerInfo> getAllTopologyWorkerInfo(String topoName);
 }

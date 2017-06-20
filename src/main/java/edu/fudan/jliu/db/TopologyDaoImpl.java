@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import edu.fudan.jliu.model.TopologyBasicInfo;
 import edu.fudan.jliu.model.TopologyComponentInfo;
 import edu.fudan.jliu.model.TopologyWorkerInfo;
+import sun.applet.Main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -213,21 +214,55 @@ public class TopologyDaoImpl implements TopologyDao {
     public List<TopologyComponentInfo> getAllTopologyComponentInfo(String topoName) {
         List<TopologyComponentInfo> componentInfoList = new ArrayList<>();
         try {
-            Map<String, Object> queryRet = dbManager.getJdbcTemplate().queryForMap(
+            List<Map<String, Object>> queryRetList = dbManager.getJdbcTemplate().queryForList(
                     "SELECT * FROM " + DBManager.TOPOLOGY_COMPONENT_INFO_TABLE + " WHERE topo_name = ?", new Object[] { topoName });
-            TopologyComponentInfo info = new TopologyComponentInfo();
-            info.setTopoName(topoName);
-            info.setComponentId((String)queryRet.get("component_id"));
-            info.setType((String)queryRet.get("type"));
-            info.setExecutorNum((int)queryRet.get("executor_num"));
-            info.setTaskNum((int)queryRet.get("task_num"));
-            info.setAllTimeProcessed((long)queryRet.get("alltime_processed"));
-            info.setAllTimeFailed((long)queryRet.get("alltime_failed"));
-            info.setAllTimeLatency((double)queryRet.get("alltime_latency"));
-            componentInfoList.add(info);
+            for(Map<String, Object> queryRet : queryRetList) {
+            	TopologyComponentInfo info = new TopologyComponentInfo();
+                info.setTopoName(topoName);
+                info.setComponentId((String)queryRet.get("component_id"));
+                info.setType((String)queryRet.get("type"));
+                info.setExecutorNum((int)queryRet.get("executor_num"));
+                info.setTaskNum((int)queryRet.get("task_num"));
+                info.setAllTimeProcessed((long)queryRet.get("alltime_processed"));
+                info.setAllTimeFailed((long)queryRet.get("alltime_failed"));
+                info.setAllTimeLatency((double)queryRet.get("alltime_latency"));
+                componentInfoList.add(info);
+            }
+
         } catch (Exception e) {
             logger.info("cannot select the topology info for {}", topoName);
         }
         return componentInfoList;
     }
+    
+    public static void main(String [] args) {
+    	final TopologyDao topologyDao = new TopologyDaoImpl();
+    	List<TopologyComponentInfo> componentInfoList  = topologyDao.getAllTopologyComponentInfo("bb480p_a1146144792_gray_142502");
+    	for(TopologyComponentInfo info : componentInfoList) {
+    		System.out.println("info::"+info);
+    	}
+    }
+
+	@Override
+	public List<TopologyWorkerInfo> getAllTopologyWorkerInfo(String topoName) {
+        List<TopologyWorkerInfo> workerInfoList = new ArrayList<>();
+        try {
+            List<Map<String, Object>> queryRetList = dbManager.getJdbcTemplate().queryForList(
+                    "SELECT * FROM " + DBManager.TOPOLOGY_WORKER_INFO_TABLE + " WHERE topo_name = ?", new Object[] { topoName });
+            for(Map<String, Object> queryRet : queryRetList) {
+            	TopologyWorkerInfo info = new TopologyWorkerInfo();
+                info.setTopoName(topoName);
+                info.setHost((String)queryRet.get("host"));
+                info.setPid((long)queryRet.get("pid"));
+                info.setPort((int)queryRet.get("port"));
+                info.setCpuUsage((double)queryRet.get("cpu_usage"));
+                info.setMemoryUsage((double)queryRet.get("memory_usage"));
+                workerInfoList.add(info);
+            }
+
+        } catch (Exception e) {
+            logger.info("cannot select the topology info for {}", topoName);
+        }
+        return workerInfoList;
+	}
 }

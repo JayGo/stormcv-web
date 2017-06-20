@@ -55,7 +55,7 @@ public class DBManager {
 			+ "primary key(id));";
 	public static final String EFFECT_RTMP_TABLE_COLS = "(stream_id, effect_type, effect_params, rtmp_addr, topo_name, valid)";
 
-	 public static final String TOPOLOGY_TABLE = "topology";
+	public static final String TOPOLOGY_TABLE = "topology";
     public static final String TOPOLOGY_TABLE_COLS = "(topo_name, topo_id, worker_num, owner, uptime_secs, task_num, " +
             "executor_num, status)";
 
